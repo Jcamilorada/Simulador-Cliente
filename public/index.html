@@ -1,17 +1,20 @@
 <!doctype html>
-<html ng-app>
-	<head>
-		<title>Hello AngularJS</title>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
-    	<script src="hello.js"></script>
-	</head>
+<html ng-app="AngularApp">
+<head>
+    <title>Hello AngularJS</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
-	<body>
-		<div ng-controller="Hello">
-			<p>The ID is {{greeting.value}}</p>
-			<p>The content is {{greeting.name}}</p>
-            <p>The content is {{greeting.description}}</p>
-		</div>
-	</body>
+    <script src="https://code.angularjs.org/1.2.26/angular.min.js"></script>
+    <script src="https://code.angularjs.org/1.2.26/angular-route.min.js"></script>
+    <script src="https://code.angularjs.org/1.2.26/angular-resource.min.js"></script>
+    <script src="js/App.js"></script>
+    <script src="js/InformationController.js"></script>
+    <script src=" http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <a href="#/applicationInfo">Application Information</a>
+    <div ng-view></div>
+</body>
 </html>
 
