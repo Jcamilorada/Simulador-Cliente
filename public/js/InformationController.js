@@ -1,5 +1,10 @@
-var InformationController = function($scope, $http){
-    $scope.addTodo = function(){
-        alert('This is an alert');
+var InformationController = function($scope, $http, serverUrl){
+    $scope.getData = function(){
+        $http.get(serverUrl + '/parameter/1').
+          success(function(data, status, headers, config) {
+            $scope.data = data;
+          }).
+          error(function(data, status, headers, config) {
+          });
     }
 }
