@@ -2,22 +2,28 @@
 <html ng-app="AngularApp">
 <head>
     <title>Simulador Cliente</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
     <script src="http://threejs.org/build/three.min.js"></script>
     <script src="libraries/trackballControls.js"></script>
     <script src="https://code.angularjs.org/1.2.26/angular.min.js"></script>
     <script src="https://code.angularjs.org/1.2.26/angular-route.min.js"></script>
     <script src="https://code.angularjs.org/1.2.26/angular-resource.min.js"></script>
     <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="libraries/ui-bootstrap-tpls-0.11.2.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/informationController.js"></script>
     <script src="js/meshController.js"></script>
     <script src="js/draggingController.js"></script>
+    <script src="js/homeController.js"></script>
 </head>
 <body>
-    <a href="#/applicationInfo">Application Information</a>
-    <a href="#/mesh">Mesh Example</a>
-    <a href="#/dragging">Dragging example</a>
-
+<ol class="nav nav-pills" role="tablist">
+    <li role="presentation"><a href="#/applicationInfo">Application Information</a></li>
+    <li role="presentation"><a href="#/mesh">Mesh Example</a></li>
+    <li role="presentation"><a href="#/dragging">Dragging example</a></li>
+    <li role="presentation"><a href="#/home">Home</a></li>
+</ol>
     <div ng-view></div>
 </body>
 </html>

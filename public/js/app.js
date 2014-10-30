@@ -1,6 +1,6 @@
 var AngularApp = {};
 
-var App = angular.module('AngularApp', ['ngRoute', 'ngResource']);
+var App = angular.module('AngularApp', ['ngRoute', 'ngResource', 'ui.bootstrap']);
 
 App.constant('serverUrl', 'http://localhost:8080');
 
@@ -18,6 +18,11 @@ App.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/dragging', {
         templateUrl: 'templates/dragging.html',
         controller: draggingController
+    });
+
+    $routeProvider.when('/home', {
+        templateUrl: 'templates/home.html',
+        controller: homeController
     });
 
     $routeProvider.otherwise({redirectTo: '/'});
