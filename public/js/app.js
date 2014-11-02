@@ -1,6 +1,6 @@
 var AngularApp = {};
 
-var App = angular.module('AngularApp', ['ngRoute', 'ngResource', 'ui.bootstrap']);
+var App = angular.module('AngularApp', ['ngRoute', 'ngResource', 'ui.bootstrap', 'ngCookies']);
 
 App.constant('serverUrl', 'http://localhost:8080');
 
@@ -34,6 +34,11 @@ App.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/information', {
         templateUrl: 'templates/information.html',
         controller: informationController
+    });
+
+    $routeProvider.when('/procedure', {
+        templateUrl: 'templates/procedure.html',
+        controller: procedureController
     });
 
     $routeProvider.otherwise({redirectTo: '/'});

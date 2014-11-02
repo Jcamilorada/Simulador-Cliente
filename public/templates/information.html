@@ -1,11 +1,35 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-3"></div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 centered">
             <h1>Information</h1>
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Nombre">
+            <br>
+            <form>
+            <div class="form-group input-group-lg">
+                <input type="text" class="form-control" placeholder="Nombre Paciente" ng-model="patient.name">
             </div>
+            <div class="form-group input-group-lg">
+                <input type="number" class="form-control" placeholder="Talla" ng-model="patient.size" >
+            </div>
+            <div class="form-group input-group-lg">
+                <input type="number" class="form-control" placeholder="Peso" ng-model="patient.weight">
+            </div>
+            <div class="form-group input-group-lg">
+                <select class="form-control" ng-model="patient.gender">
+                    <option>Hombre</option>
+                    <option>Mujer</option>
+                </select>
+            </div>
+            <div class="form-group input-group-lg">
+                <input type="number" class="form-control" placeholder="Edad" ng-model="patient.age">
+            </div>
+            <nav>
+                <ul class="pager">
+                    <li><a href="#">Atras</a></li>
+                    <li><a href="#" ng-click="update(patient)">Siguiente</a></li>
+                </ul>
+            </nav>
+            </form>
         </div>
         <div class="col-lg-3"></div>
     </div>
