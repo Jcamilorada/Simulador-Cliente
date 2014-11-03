@@ -74,7 +74,7 @@ var draggingController = function($scope, $http, serverUrl){
 
     function initCube(){
     var loader = new THREE.JSONLoader();
-    loader.load('http://localhost:9041/js-resources/airplane.js',
+    loader.load('http://localhost:9041/js-resources/avion.js',
         function(geometry, materials) {
             mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial( materials ) );
             scene.add(mesh);

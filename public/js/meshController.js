@@ -1,6 +1,6 @@
 var meshController = function($scope, $http, serverUrl){
     var scene, camera, renderer, controls;
-    var geometry, material, mesh;
+    var geometry, material, mesh, light;
 
     init();
     animate();
@@ -21,10 +21,14 @@ var meshController = function($scope, $http, serverUrl){
          $("#graphic").append(renderer.domElement);
 
        // Create a light.
-        var light = new THREE.PointLight(0xffffff);
-        light.position.set(-100,200,100);
-        light.intensity = 5;
+        light = new THREE.PointLight(0xffffff);
+        //light.position.set(-100,200,100);
+        //light.position = camera.position;
+        light.intensity = 1;
         scene.add(light);
+
+        var light2 = new THREE.AmbientLight( 0x404040 ); // soft white light
+        scene.add( light2 );
 
    }
 
@@ -50,6 +54,7 @@ var meshController = function($scope, $http, serverUrl){
    function animate() {
        requestAnimationFrame(animate);
        controls.update();
+       light.position.copy( camera.position );
        renderer.setClearColor( 0xFFFFFFFF, 0 );
        renderer.render(scene, camera);
    }
