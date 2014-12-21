@@ -87,7 +87,7 @@ var draggingController = function($scope, $http, serverUrl){
         scene.add(axes);
 
         plane = new THREE.GridHelper(50, 1);
-        scene.add(plane);
+        //scene.add(plane);
     }
 
    function animate(){
