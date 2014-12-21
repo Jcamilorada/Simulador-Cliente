@@ -1,16 +1,21 @@
-var procedureController = function($scope, $http, serverUrl){
- var canvas = document.getElementById('myCanvas');
-      var context = canvas.getContext('2d');
-      var imageObj = new Image();
+var procedureController = function($scope, $modal){
+    $scope.showDialog = function() {
+        var modalInstance = $modal.open({
+            templateUrl: 'templates/procedureDialog.html',
+            controller: 'procedureDialogController',
+            size: 'lg',
+            resolve: {
+                selection: function () {
+                    $scope.selection = {procedure: $scope.procedure, procedureType: $scope.procedureType}
+                    return $scope.selection;
+                }
+            }
+        });
 
-      imageObj.onload = function() {
-        context.drawImage(imageObj, 0, 0, 800, 800);
-      };
-      imageObj.src = '/images/human-body-woman.jpg';
-
-
-      canvas.addEventListener('click',
-      function(event) {
-        alert("hoal");
-      }, false);
+        modalInstance.result.then(function(selection) {
+            $scope.procedure = selection.procedure;
+            $scope.procedureType = selection.procedureType;
+            $scope.pnr = selection.procedureType.pnr;
+        });
+    }
 }

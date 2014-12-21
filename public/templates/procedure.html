@@ -1,2 +1,36 @@
- <canvas id="myCanvas" width="800" height="800">
- </canvas>
+<div class="col-lg-3"></div>
+<div class="col-lg-6 centered" style="height: 480px;">
+    <div class="col-lg-12">
+        <img my-holder="holder.js/640x400" ng-click="showDialog()">
+    </div>
+    <div class="col-lg-6">
+        <div class="form-group input-group ">
+            <span class="input-group-addon">Procedimiento</span>
+            <input readonly="readonly" class="form-control" type="text" ng-model="procedure.name">
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="form-group input-group ">
+            <span class="input-group-addon">Estimulo</span>
+            <input readonly="readonly" class="form-control" type="text" ng-model="procedureType.name">
+        </div>
+    </div>
+    <div class="col-lg-1">
+        <div class="btn-group">
+            <button type="button" ng-click="showDialog()" class="btn btn-success">{{'choose_procedure' | translate }}</button>
+        </div>
+    </div>
+    <div class="col-lg-6"></div>
+    <div class="col-lg-5">
+        <div class="form-group input-group ">
+            <span class="input-group-addon">PNR</span>
+            <input class="form-control" type="number" ng-model="pnr">
+        </div>
+    </div>
+</div>
+<nav class="col-lg-12">
+    <ul class="pager">
+        <li><a href="#">Atras</a></li>
+        <li><a href="#">Siguiente</a></li>
+    </ul>
+</nav>

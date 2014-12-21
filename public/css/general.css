@@ -1,3 +1,19 @@
 .centered{
     text-align: center;
 }
+
+p{
+    text-align: justify;
+}
+
+.app-button{
+    width: 185px;
+}
+
+#link-list li {
+    font-size: 11px;
+}
+
+.main-content {
+    height: 480px;
+}

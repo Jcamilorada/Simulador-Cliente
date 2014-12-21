@@ -1,0 +1,50 @@
+<div class="modal-header">
+    <h3 class="modal-title">Seleccion de procedimiento</h3>
+</div>
+<div class="modal-body">
+    <div class="col-lg-6">
+        <input type="text" placeholder="Buscar..." class="form-control" ng-model="keyword" ng-change="search()">
+    </div>
+    <div class="clearfix"></div>
+    <form>
+    <div class="col-lg-6">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Procedimiento</th>
+                <th>Codigo</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tr ng-repeat="item in procedures">
+                <td>{{item.name}}</td>
+                <td>{{item.code}}</td>
+                <td><input type="radio" ng-model="$parent.procedureCode" ng-value="{{item.code}}"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-lg-6">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Estimulo</th>
+                <th>Ejemplo</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tr ng-repeat="item in procedure_types">
+                <td>{{item.id}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.examples}}</td>
+                <td><input type="radio" ng-model="$parent.procedureTypeId" ng-value="{{item.id}}"></td>
+            </tr>
+        </table>
+    </div>
+    </form>
+</div>
+<div class="clearfix"></div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>

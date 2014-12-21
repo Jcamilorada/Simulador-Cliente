@@ -1,0 +1,59 @@
+<div class="col-lg-1"></div>
+<div class="col-lg-10 centered">
+    <div class="col-lg-6">
+        <div class="thumbnail">
+            <img my-holder="holder.js/400x340">
+            <div class="caption">
+                <h3>Simulacion</h3>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <input type="text" class="form-control" placeholder="Tiempo actual">
+            <input type="text" ng-model="pnr" class="form-control" placeholder="PNR actual">
+            <input type="text" ng-model="x" ng-change="onUpdateX()" class="form-control" placeholder="Cocentracion1 actual">
+            <input type="text" ng-model="y" class="form-control" placeholder="Cocentracion2 actual">
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <h2>Remifentanilo</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Tiempo</th>
+                <th>Valvula</th>
+                <th>Proceso</th>
+            </tr>
+            </thead>
+            <tr>
+                <td>10</td>
+                <td>5mg/hora</td>
+                <td>Induccion</td>
+            </tr>
+        </table>
+        <br>
+        <br>
+        <br>
+        <h2>Propofol</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Tiempo</th>
+                <th>Valvula</th>
+                <th>Proceso</th>
+            </tr>
+            </thead>
+            <tr>
+                <td>10</td>
+                <td>5mg/hora</td>
+                <td>Induccion</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="col-lg-1"></div>
+<nav class="col-lg-12">
+    <ul class="pager">
+        <li><a href="#">Atras</a></li>
+        <li><a href="#" ng-click="update(patient)">Siguiente</a></li>
+    </ul>
+</nav>
