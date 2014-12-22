@@ -5,25 +5,27 @@
 
     <form role="form">
         <div class="form-group input-group input-group-lg col-lg-12">
-            <input type="text" class="form-control" placeholder="Nombre Paciente" ng-model="patient.name">
+            <span class="input-group-addon">{{'patient_name' | translate}}</span>
+            <input type="text" class="form-control" ng-model="patient.name">
         </div>
         <div class="form-group input-group input-group-lg col-lg-12">
-            <span class="input-group-addon">Cms</span>
-            <input type="number" class="form-control" placeholder="Talla" ng-model="patient.size">
+            <span class="input-group-addon">{{'patient_height' | translate}}</span>
+            <input type="number" class="form-control" ng-model="patient.height">
         </div>
         <div class="form-group input-group input-group-lg col-lg-12">
-            <span class="input-group-addon">Kg</span>
-            <input type="number" class="form-control" placeholder="Peso" ng-model="patient.weight">
+            <span class="input-group-addon">{{'patient_weight' | translate}}</span>
+            <input type="number" class="form-control" ng-model="patient.weight">
         </div>
         <div class="form-group input-group input-group-lg col-lg-12">
+            <span class="input-group-addon">{{'patient_genre' | translate}}</span>
             <select class="form-control" ng-model="patient.gender">
                 <option>Hombre</option>
                 <option>Mujer</option>
             </select>
         </div>
         <div class="form-group input-group input-group-lg col-lg-12">
-            <span class="input-group-addon">Años</span>
-            <input type="number" class="form-control" placeholder="Edad" ng-model="patient.age">
+            <span class="input-group-addon">{{'patient_age' | translate}}</span>
+            <input type="number" class="form-control" ng-model="patient.age">
         </div>
     </form>
 </div>
