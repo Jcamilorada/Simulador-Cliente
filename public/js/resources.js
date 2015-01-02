@@ -17,6 +17,9 @@ App.factory("$procedures_types", function($resource, serverUrl) {
   return $resource(serverUrl + "/procedures-types");
 });
 
+App.factory("$solutions", function($resource, serverUrl) {
+  return $resource(serverUrl + "/solutions");
+});
 
 // Surface Model resources
 App.factory("$sf_pnr", function($resource, serverUrl) {

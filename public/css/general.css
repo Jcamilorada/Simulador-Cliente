@@ -17,3 +17,7 @@ p{
 .main-content {
     height: 480px;
 }
+
+th {
+    text-align: center;
+}

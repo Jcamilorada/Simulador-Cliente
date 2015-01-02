@@ -1,29 +1,32 @@
-<div class="col-lg-4"></div>
-<div class="col-lg-4 main-content">
+<div class="col-lg-3"></div>
+<div class="col-lg-6 main-content">
     <h1>Medicamentos</h1>
 
     <table class="table">
         <thead>
         <tr>
             <th>Medicamento</th>
-            <th>Concentracion</th>
-            <th></th>
+            <th colspan="{{solutions.length}}">Volumen</th>
+            <th colspan="1"></th>
+            <th colspan="{{solution_types.length}}">Disolvente</th>
         </tr>
         </thead>
-        <tr>
-            <td>Remimentalino</td>
-            <td><input type="radio" id="g1" name="g" value="1">
-                <label  for="g1" >500</label>
-                <input type="radio" name="g" value="2" id="g2">
-                <label for="g2" >250</label>
-            <td>
-                <input type="radio" id="d1" name="g2" value="1">
-                <label  for="d1" >Distroxa</label>
+        <tr ng-repeat="d in drugs">
+            <td>{{d.name}}</td>
+            <td ng-repeat="s in solutions">
+                <input type="radio" id="g{{s.value}}" name="g" value="{{s.value}}">
+                <label  for="g{{s.value}}">{{s.description}}</label>
+            </td>
+            <td colspan="1" width="20%">
+            </td>
+            <td ng-repeat="d in solution_types">
+                <input type="radio" id="s{{d.value}}" name="s" value="{{d.value}}">
+                <label  for="s{{d.value}}">{{d.name}}</label>
             </td>
         </tr>
     </table>
 </div>
-<div class="col-lg-4"></div>
+<div class="col-lg-3"></div>
 <nav class="col-lg-12">
     <ul class="pager">
         <li><a href="#">Atras</a></li>

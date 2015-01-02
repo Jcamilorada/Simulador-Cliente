@@ -67,7 +67,7 @@ App.config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.when('/drugsConcentration', {
         templateUrl: 'templates/drugsConcentration.html',
-        controller: drugsProcedureController
+        controller: drugsConcentrationController
     });
 
     $routeProvider.when('/pnr', {
