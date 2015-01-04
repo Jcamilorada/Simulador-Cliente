@@ -1,3 +1,2 @@
-var simulationController = function($scope, $http, serverUrl)
-{
+var simulationController = function($scope) {
 }

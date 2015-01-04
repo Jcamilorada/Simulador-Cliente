@@ -8,28 +8,33 @@
             </div>
         </div>
         <div class="col-lg-12">
-            <input type="text" class="form-control" placeholder="Tiempo actual">
-            <input type="text" ng-model="pnr" class="form-control" placeholder="PNR actual">
-            <input type="text" ng-model="x" ng-change="onUpdateX()" class="form-control" placeholder="Cocentracion1 actual">
-            <input type="text" ng-model="y" class="form-control" placeholder="Cocentracion2 actual">
+            <input type="text" ng-model="current_time" class="form-control" placeholder="Tiempo actual">
+            <input type="text" ng-model="current_pnr" class="form-control" placeholder="PNR actual">
+            <input type="text" ng-model="current_remi" class="form-control" placeholder="Cocentracion1 actual">
+            <input type="text" ng-model="current_prop" class="form-control" placeholder="Cocentracion2 actual">
+        </div>
+        <div class="ol-lg-12 btn-group">
+            <button type="button" class="app-button btn btn-primary" ng-click="start_simulation()">Iniciar simulación</button>
         </div>
     </div>
     <div class="col-lg-6">
-        <h2>Remifentanilo</h2>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Tiempo</th>
-                <th>Valvula</th>
-                <th>Proceso</th>
-            </tr>
-            </thead>
-            <tr>
-                <td>10</td>
-                <td>5mg/hora</td>
-                <td>Induccion</td>
-            </tr>
-        </table>
+        <div class="col-lg-12">
+            <h2>Remifentanilo</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Tiempo</th>
+                    <th>Valvula</th>
+                    <th>Proceso</th>
+                </tr>
+                </thead>
+                <tr ng-repeat="r in remi_simulation_data.infusionList">
+                    <td>{{r.time}}</td>
+                    <td>{{r.infusionValue}}</td>
+                    <td>Induccion</td>
+                </tr>
+            </table>
+        </div>
         <br>
         <br>
         <br>
@@ -42,9 +47,9 @@
                 <th>Proceso</th>
             </tr>
             </thead>
-            <tr>
-                <td>10</td>
-                <td>5mg/hora</td>
+            <tr ng-repeat="p in prop_simulation_data.infusionList">
+                <td>{{p.time}}</td>
+                <td>{{p.infusionValue}}</td>
                 <td>Induccion</td>
             </tr>
         </table>

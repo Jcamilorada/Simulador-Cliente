@@ -12,11 +12,11 @@ App.config(function($translateProvider) {
 
 
     // Patient Information
-    information_title: 'Información',
+    information_title: 'InformaciÃ³n',
     patient_name: 'Nombre',
     patient_height: 'Altura (cms)',
     patient_weight: 'Peso (Kg)',
-    patient_genre: 'Género',
+    patient_genre: 'GÃ©nero',
     patient_age: 'Edad',
   });
 

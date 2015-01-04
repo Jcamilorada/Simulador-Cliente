@@ -17,9 +17,18 @@ App.factory("$procedures_types", function($resource, serverUrl) {
   return $resource(serverUrl + "/procedures-types");
 });
 
+App.factory("$drugs", function($resource, serverUrl) {
+  return $resource(serverUrl + "/drugs");
+});
+
 App.factory("$solutions", function($resource, serverUrl) {
   return $resource(serverUrl + "/solutions");
 });
+
+App.factory("$induction_methods", function($resource, serverUrl) {
+  return $resource(serverUrl + "/methods");
+});
+
 
 // Surface Model resources
 App.factory("$sf_pnr", function($resource, serverUrl) {
@@ -32,4 +41,8 @@ App.factory("$sf_x", function($resource, serverUrl) {
 
 App.factory("$sf_y", function($resource, serverUrl) {
   return $resource(serverUrl + "/sf/x/:x/pnr/:pnr");
+});
+
+App.factory("$sf_xy", function($resource, serverUrl) {
+  return $resource(serverUrl + "/sf/pnr/:pnr");
 });

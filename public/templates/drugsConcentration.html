@@ -6,6 +6,7 @@
         <thead>
         <tr>
             <th>Medicamento</th>
+            <th colspan="1"></th>
             <th colspan="{{solutions.length}}">Volumen</th>
             <th colspan="1"></th>
             <th colspan="{{solution_types.length}}">Disolvente</th>
@@ -13,15 +14,16 @@
         </thead>
         <tr ng-repeat="d in drugs">
             <td>{{d.name}}</td>
-            <td ng-repeat="s in solutions">
-                <input type="radio" id="g{{s.value}}" name="g" value="{{s.value}}">
-                <label  for="g{{s.value}}">{{s.description}}</label>
-            </td>
             <td colspan="1" width="20%">
             </td>
-            <td ng-repeat="d in solution_types">
-                <input type="radio" id="s{{d.value}}" name="s" value="{{d.value}}">
-                <label  for="s{{d.value}}">{{d.name}}</label>
+            <td ng-repeat="s in solutions">
+                <input type="radio" id="g{{s.value}}" name="g{{d.id}}" value="{{s.value}}">
+                <label for="g{{s.value}}">{{s.description}}</label>
+            </td>
+            <td colspan="1"></td>
+            <td ng-repeat="st in solution_types">
+                <input type="radio" id="s{{st.value}}" name="s{{d.id}}" value="{{st.value}}">
+                <label for="s{{st.value}}">{{st.name}}</label>
             </td>
         </tr>
     </table>

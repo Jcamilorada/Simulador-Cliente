@@ -16,8 +16,6 @@ App.directive('myHolder', function() {
 })
 
 
-
-
 App.config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.when('/mesh', {
@@ -83,6 +81,11 @@ App.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/running', {
         templateUrl: 'templates/runningSimulation.html',
         controller: runningController
+    });
+
+    $routeProvider.when('/inductionMethod', {
+        templateUrl: 'templates/inductionMethod.html',
+        controller: inductionMethodsController
     });
 
     $routeProvider.otherwise({redirectTo: '/'});

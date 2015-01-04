@@ -12,9 +12,8 @@ var checkListController = function($scope, $location, $filter, $http, serverUrl,
         }, true);
 
         if ($scope.isValid) {
-            $location.path('/procedure');
+            $location.path('/information');
         }
-
     };
 
     $scope.showError = function(){

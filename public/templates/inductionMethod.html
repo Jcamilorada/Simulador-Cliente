@@ -1,9 +1,9 @@
 <div class="col-lg-4"></div>
 <div class="col-lg-4 main-content">
-    <h1>Medicamentos Procedimiento</h1>
-    <div ng-repeat="d in drugs" class="form-group input-group input-group-lg col-lg-12">
+    <h1>Método de inducción</h1>
+    <div class="form-group input-group input-group-lg col-lg-12">
         <select class="form-control col-lg-10">
-            <option ng-repeat="c in d.concentrations" value="{{d.id}}-{{c}}">{{d.name}} - {{c}}</option>
+            <option ng-repeat="m in methods" value="{{m.id}}">{{m.name}}</option>
         </select>
     </div>
 </div>
