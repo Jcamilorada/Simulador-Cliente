@@ -2,8 +2,9 @@
 <div class="col-lg-4 main-content">
     <h1>Método de inducción</h1>
     <div class="form-group input-group input-group-lg col-lg-12">
-        <select class="form-control col-lg-10">
-            <option ng-repeat="m in methods" value="{{m.id}}">{{m.name}}</option>
+        <select class="form-control col-lg-10"
+                ng-options="m.name for m in methods track by m.id"
+                ng-model="induction_method" ng-change="onChange()">
         </select>
     </div>
 </div>

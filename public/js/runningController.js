@@ -1,29 +1,23 @@
-var runningController = function($scope, $http, $q, serverUrl, $interval,  $sf_xy) {
+var runningController = function($scope, $http, $q, serverUrl, $interval, $sf_xy, $cookieStore) {
 
     // Init variables
     $scope.current_time = 0;
 
     // Simulation information
-    var induction_time = 6 * 60;
-    var induction_pnr = 0.8;
+    var induction_time = $cookieStore.get('ind_time') * 60;
+    var induction_pnr = $cookieStore.get('ind_pnr');
 
-    var procedure_interval = 20 * 60;
-    var procedure_raise_time = 5 * 60;
-    var procedure_pnr = 0.6;
+    var procedure_interval = $cookieStore.get('proc_inter_time') * 60;
+    var procedure_raise_time = $cookieStore.get('proc_time') * 60;
+    var procedure_pnr = $cookieStore.get('proc_pnr');
 
-    var wake_time = 5 * 60;
-    var wake_pnr = 0.1;
+    var wake_time = $cookieStore.get('wakeup_time') * 60;
+    var wake_pnr = $cookieStore.get('wakeup_pnr');
 
-    var deltaTime = 5 * 60;
-    var patient = {
-        height : 160,
-        weight : 55,
-        age: 22,
-        gender : 1
-    };
+    var deltaTime = $cookieStore.get('delta') * 60;
+    var patient = $cookieStore.get('patient');
 
     // First we calculate the necessary infusions based on pnr value.
-
     // Induction PNR
     var remi_ind_inf, prop_ind_inf;
     var ind_request = $sf_xy.get({pnr: induction_pnr}, function (data) {
@@ -61,8 +55,8 @@ var runningController = function($scope, $http, $q, serverUrl, $interval,  $sf_x
             { startTime: procedure_end_time,    endTime: wakeup_end_time,      infusion: prop_wake_inf}
             ];
 
-        var remi_request = { model: 0, deltaTime : deltaTime, patient: patient , pumpInfusion : remi_pump_infusion };
-        var prop_request = { model: 1, deltaTime : deltaTime, patient: patient , pumpInfusion : prop_pump_infusion };
+        var remi_request = { model: 0, deltaTime : deltaTime, patient: patient , pumpInfusion : remi_pump_infusion, drugConcentration: 10 };
+        var prop_request = { model: 1, deltaTime : deltaTime, patient: patient , pumpInfusion : prop_pump_infusion, drugConcentration: 10 };
 
         $http.put(serverUrl + "/infusion/solve", remi_request).success(function (data) {
             $scope.remi_simulation_data = data;

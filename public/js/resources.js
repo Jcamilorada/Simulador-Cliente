@@ -18,7 +18,9 @@ App.factory("$procedures_types", function($resource, serverUrl) {
 });
 
 App.factory("$drugs", function($resource, serverUrl) {
-  return $resource(serverUrl + "/drugs");
+   return $resource(serverUrl + "/drugs/:id", {id:'@id'}, {
+      'query': {url: serverUrl + "/drugs/type/:type", isArray:true},
+    });
 });
 
 App.factory("$solutions", function($resource, serverUrl) {

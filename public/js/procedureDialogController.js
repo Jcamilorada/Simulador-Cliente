@@ -1,19 +1,21 @@
 var procedureDialogController = function($scope, $modalInstance, $procedures, $procedures_types, selection, $filter){
 
-    if (angular.isDefined(selection.procedure)) {
-        $scope.procedureCode = selection.procedure.code;
-        $procedures.get({id: selection.procedure.code }, function(data) {
-            $scope.procedures = [data];
+    $scope.onLoad = function() {
+        if (angular.isDefined(selection.procedure)) {
+            $scope.procedureCode = selection.procedure.code;
+            $procedures.get({id: selection.procedure.code }, function(data) {
+                $scope.procedures = [data];
+            });
+        }
+
+        if (angular.isDefined(selection.procedureType)){
+            $scope.procedureTypeId = selection.procedureType.id;
+        }
+
+        $procedures_types.query(function (data) {
+            $scope.procedure_types = data;
         });
     }
-
-    if (angular.isDefined(selection.procedureType)){
-        $scope.procedureTypeId = selection.procedureType.id;
-    }
-
-    $procedures_types.query(function (data) {
-        $scope.procedure_types = data;
-    });
 
     $scope.search = function() {
         $procedures.query({ keyword: $scope.keyword }, function(data) {
@@ -31,4 +33,6 @@ var procedureDialogController = function($scope, $modalInstance, $procedures, $p
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
+
+    $scope.onLoad();
 }

@@ -1,7 +1,7 @@
 <div class="col-lg-3"></div>
 <div class="col-lg-6 main-content">
     <h1>Medicamentos</h1>
-
+    <h1>{{solution}}</h1>
     <table class="table">
         <thead>
         <tr>
@@ -14,15 +14,22 @@
         </thead>
         <tr ng-repeat="d in drugs">
             <td>{{d.name}}</td>
-            <td colspan="1" width="20%">
+            <td colspan="1" >
             </td>
             <td ng-repeat="s in solutions">
-                <input type="radio" id="g{{s.value}}" name="g{{d.id}}" value="{{s.value}}">
-                <label for="g{{s.value}}">{{s.description}}</label>
+                <label>{{s.description}}
+                    <input type="radio" name="{{d.name}}_solution" ng-model="d.solution" value="{{s.value}}" ng-change="onChange()"/> {{n.name}}
+                </label>
             </td>
+
+
+            <!--<td ng-repeat="s in solutions">
+                <input type="radio" id="g{{s.value}}" name="g{{d.id}}" value="{{s.value}}" ng-model="solution" ng-change="onChange()">
+                <label for="g{{s.value}}">{{s.description}}</label>
+            </td>-->
             <td colspan="1"></td>
             <td ng-repeat="st in solution_types">
-                <input type="radio" id="s{{st.value}}" name="s{{d.id}}" value="{{st.value}}">
+                <input type="radio" id="s{{st.value}}" name="s{{d.id}}" value="{{st.value}}" ng-model="solution_type" >
                 <label for="s{{st.value}}">{{st.name}}</label>
             </td>
         </tr>
