@@ -48,3 +48,7 @@ App.factory("$sf_y", function($resource, serverUrl) {
 App.factory("$sf_xy", function($resource, serverUrl) {
   return $resource(serverUrl + "/sf/pnr/:pnr");
 });
+
+App.factory("$sf_xy_pnr", function($resource, serverUrl) {
+  return $resource(serverUrl + "/sf/x/:x/y/:y");
+});

@@ -1,5 +1,27 @@
-var pnrController = function($scope, $sf_pnr, $sf_x, $sf_y, $sf_xy, $cookieStore, $cookies)
+var pnrController = function($scope, $sf_xy_pnr, $sf_x, $sf_y, $sf_xy, $cookieStore, $cookies, $drawMesh, serverUrl, round_2d, $timeout)
 {
+    $drawMesh($scope, serverUrl, 'induction_mesh');
+
+    var timeoutPromise;
+    var delayInMs = 1000;
+    $scope.$watchCollection('[SELECTED.position.x, SELECTED.position.y]', function (newValues, oldValues) {
+
+        // TODO: Investigate why NAN values inside de vector.
+        if (angular.isDefined(newValues[0]) && angular.isDefined(newValues[1])) {
+            $scope.ind_x = round_2d(newValues[0] / 5);
+            $scope.ind_y = round_2d(newValues[1] / 5);
+
+
+            $timeout.cancel(timeoutPromise);
+            timeoutPromise = $timeout(function(){
+                $sf_xy_pnr.get({x: $scope.ind_x, y: $scope.ind_y }, function (data) {
+                    $scope.ind_pnr = data.value;
+                });
+            },delayInMs);
+        }
+    }, true);
+
+
     $scope.onLoad = function() {
         var ind_time = $cookies["ind_time"];
         if (angular.isDefined(ind_time)) {
@@ -42,9 +64,6 @@ var pnrController = function($scope, $sf_pnr, $sf_x, $sf_y, $sf_xy, $cookieStore
             $scope.proc_x = data.x;
             $scope.proc_y = data.y;
         });
-
-
-
     }
 
     // Infusion methods
