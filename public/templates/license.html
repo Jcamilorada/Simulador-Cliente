@@ -1,11 +1,16 @@
-<div class="col-lg-1"></div>
-<div class="col-lg-10 main-content">
+<div class="col-lg-2"></div>
+<div class="col-lg-8">
+    <h1>{{'license_title' | translate }}</h1>
+</div>
+
+<div class="clearfix visible-lg-block"></div>
+<div class="col-lg-2"></div>
+<div class="col-lg-8 main-content" style="overflow-y: scroll;">
     <div class="col-lg-12">
-        <h1>{{'license_title' | translate }}</h1>
-        <p>{{license}}</p>
+        <p ng-bind-html="license"/>
     </div>
 </div>
-<div class="col-lg-1"></div>
+<div class="col-lg-2"></div>
 <nav class="col-lg-12">
     <ul class="pager">
         <li><a href="/#home">Atras</a></li>

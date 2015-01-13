@@ -4,7 +4,7 @@ App.factory("parameters", function($resource, serverUrl) {
 });
 
 App.factory("recommendations", function($resource, serverUrl) {
-  return $resource(serverUrl + "/recommendations");
+  return $resource(serverUrl + "/recommendations/type/:type");
 });
 
 App.factory("$procedures", function($resource, serverUrl) {

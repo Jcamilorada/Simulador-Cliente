@@ -1,6 +1,6 @@
 var AngularApp = {};
 
-var App = angular.module('AngularApp', ['ngRoute', 'ngResource', 'ui.bootstrap', 'ngCookies', 'pascalprecht.translate']);
+var App = angular.module('AngularApp', ['ngRoute', 'ngResource', 'ngSanitize', 'ui.bootstrap', 'ngCookies', 'pascalprecht.translate']);
 
 // Holder js Fix
 App.directive('myHolder', function() {
@@ -14,16 +14,6 @@ App.directive('myHolder', function() {
 
 
 App.config(['$routeProvider', function ($routeProvider) {
-
-    $routeProvider.when('/mesh', {
-        templateUrl: 'templates/mesh.html',
-        controller: meshController
-    });
-
-    $routeProvider.when('/dragging', {
-        templateUrl: 'templates/dragging.html',
-        controller: draggingController
-    });
 
     $routeProvider.when('/home', {
         templateUrl: 'templates/home.html',
@@ -203,7 +193,7 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id) {
 
     function initAirPlane(){
         var loader = new THREE.JSONLoader();
-        loader.load('http://localhost:9041/js-resources/avion.js',
+        loader.load('http://localhost:9041/js-resources/airplane.js',
             function(geometry, materials) {
                 airplane = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial(materials));
                 airplane.scale.set(0.2, 0.2, 0.2);

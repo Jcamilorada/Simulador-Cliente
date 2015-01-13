@@ -1,9 +1,15 @@
-var checkListController = function($scope, $location, $filter, $http, serverUrl, recommendations){
-    recommendations.query(function (data) {
-        $scope.recommendations = data;
+var checkListController = function($scope, $location, $filter, $recommendations){
+    $recommendations.query({type: 1},function (data) {
+        $scope.type1_recommendations = data;
     });
-    $scope.isValid = null;
+    $recommendations.query({type: 2},function (data) {
+        $scope.type2_recommendations = data;
+    });
+    $recommendations.query({type: 3},function (data) {
+        $scope.type3_recommendations = data;
+    });
 
+    $scope.isValid = null;
     $scope.validate = function()
     {
         $scope.$watch("recommendations", function(newValue, oldValue) {

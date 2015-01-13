@@ -1,23 +1,48 @@
-<div class="col-lg-4"></div>
-<div class="col-lg-4 main-content">
-    <h1>Recuerde que</h1>
-
-    <form name="checkList">
-        <div ng-repeat="r in recommendations" class="input-group">
-            <span class="input-group-addon">
-                <input type="checkbox" ng-model="r.val"/>
-            </span>
-            <input type="text" class="form-control" value="{{r.description}}" readonly="true">
+<script type="text/ng-template" id="recommendation_list">
+    <div class="col-lg-12" ng-if="r.sentenceType == 1" >
+        <div class="col-lg-1"><input type="checkbox" ng-model="r.val"/></div>
+        <div class="col-lg-11"><p class="recommendation_p" type="text" ng-bind-html="r.description" readonly="true"></div>
+    </div>
+    <div ng-if="r.sentenceType == 2">
+        <div class="col-lg-12"><p type="text" ng-bind-html="r.description"></div>
+        <div class="col-lg-12" ng-repeat="o in r.alternatives">
+            <div class="col-lg-1"><input type="radio" name="group_{{r.id}}"></div>
+            <div class="col-lg-11"><p class="recommendation_p" type="text" ng-bind-html="o" readonly="true"/></div>
         </div>
-        <br/>
-
-        <div ng-show="showError()" class="alert alert-danger" role="alert">
-            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-            <span class="sr-only"></span>{{'check_list_error' | translate }}
+    </div>
+    <div ng-if="r.sentenceType == 3">
+        <div class="col-lg-12"><p type="text" ng-bind-html="r.description"></div>
+        <div class="col-lg-12" ng-repeat="o in r.alternatives">
+            <div class="col-lg-1"><input type="checkbox"></div>
+            <div class="col-lg-11"><p class="recommendation_p" type="text" ng-bind-html="o" readonly="true"/></div>
         </div>
-    </form>
+    </div>
+</script>
+<div class="col-lg-1"></div>
+<div class="col-lg-10 main-content">
+    <div class="col-lg-4">
+        <h2>Entrada</h2>
+        <form name="checkList">
+            <div ng-repeat="r in type1_recommendations" ng-include="'recommendation_list'">
+            </div>
+        </form>
+    </div>
+    <div class="col-lg-4">
+        <h2>Pausa Quirúrgica</h2>
+        <form name="checkList">
+            <div ng-repeat="r in type2_recommendations" ng-include="'recommendation_list'">
+            </div>
+        </form>
+    </div>
+    <div class="col-lg-4">
+        <h2>Salida</h2>
+        <form name="checkList">
+            <div ng-repeat="r in type3_recommendations" ng-include="'recommendation_list'">
+            </div>
+        </form>
+    </div>
 </div>
-<div class="col-lg-4"></div>
+<div class="col-lg-1"></div>
 <nav class="col-lg-12">
     <ul class="pager">
         <li><a href="/#license">Atras</a></li>
