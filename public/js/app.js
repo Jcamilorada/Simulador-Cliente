@@ -79,7 +79,7 @@ App.config(['$routeProvider', function ($routeProvider) {
 }]);
 
 
-App.constant('serverUrl', 'http://localhost:8080');
+App.constant('serverUrl', 'http://hq.skivent.com.co:8092');
 App.constant('round_2d', function(num) {
     return Math.round(num * 100) / 100;
 });
