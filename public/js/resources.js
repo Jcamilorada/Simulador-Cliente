@@ -3,7 +3,7 @@ App.factory("parameters", function($resource, serverUrl) {
   return $resource(serverUrl + "/parameters/:id");
 });
 
-App.factory("recommendations", function($resource, serverUrl) {
+App.factory("$recommendations", function($resource, serverUrl) {
   return $resource(serverUrl + "/recommendations/type/:type");
 });
 

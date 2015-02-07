@@ -79,7 +79,7 @@ App.config(['$routeProvider', function ($routeProvider) {
 }]);
 
 
-App.constant('serverUrl', 'http://hq.skivent.com.co:8092');
+App.constant('serverUrl', 'http://localhost:8092');
 App.constant('round_2d', function(num) {
     return Math.round(num * 100) / 100;
 });
@@ -87,7 +87,7 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id) {
 
     var div_element =  $("#" + div_id);
 
-    var scene, camera, renderer, controls, airplane;
+    var scene, camera, renderer, controls, airplane, spritey;
     var geometry, material, mesh, light;
     var mouse = new THREE.Vector2();
     var objects = [];
@@ -109,6 +109,7 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id) {
         }
     }
 
+    var canvas;
     function onDocumentMouseMove(event){
         var offset = div_element.offset();
 
@@ -128,6 +129,10 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id) {
                 $scope.SELECTED.position.y = intersects[0].point.y;
                 $scope.SELECTED.position.z = intersects[0].point.z;
                 $scope.$digest();
+
+                context.clearRect(0,0, canvas.width, canvas.height)
+                context.fillText(intersects[0].point.z, 4, 28);
+                texture.needsUpdate = true;
             }
         }
     }
@@ -136,6 +141,88 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id) {
         event.preventDefault();
         controls.enabled = true;
         $scope.SELECTED = null;
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    var context ,texture;
+    function makeTextSprite( message, parameters ) {
+      if (parameters === undefined) parameters = {};
+
+        var fontface = parameters.hasOwnProperty("fontface") ?
+            parameters["fontface"] : "Arial";
+
+        var fontsize = parameters.hasOwnProperty("fontsize") ?
+            parameters["fontsize"] : 18;
+
+        var borderThickness = parameters.hasOwnProperty("borderThickness") ?
+            parameters["borderThickness"] : 4;
+
+        var borderColor = parameters.hasOwnProperty("borderColor") ?
+            parameters["borderColor"] : {
+                r: 0,
+                g: 0,
+                b: 0,
+                a: 1.0
+            };
+
+        var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
+            parameters["backgroundColor"] : {
+                r: 255,
+                g: 255,
+                b: 255,
+                a: 1.0
+            };
+
+        //var spriteAlignment = THREE.SpriteAlignment.topLeft;
+        canvas = document.createElement('canvas');
+        context = canvas.getContext('2d');
+        context.font = "Bold " + fontsize + "px " + fontface;
+
+        // get size data (height depends only on font size)
+        var metrics = context.measureText(message);
+        var textWidth = metrics.width;
+
+        // background color
+        context.fillStyle = "rgba(" + backgroundColor.r + "," + backgroundColor.g + "," + backgroundColor.b + "," + backgroundColor.a + ")";
+        // border color
+        context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + "," + borderColor.b + "," + borderColor.a + ")";
+
+        context.lineWidth = borderThickness;
+        roundRect(context, borderThickness / 2, borderThickness / 2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
+        // 1.4 is extra height factor for text below baseline: g,j,p,q.
+
+        // text color
+        context.fillStyle = "rgba(0, 0, 0, 1.0)";
+
+        context.fillText(message, borderThickness, fontsize + borderThickness);
+
+        // canvas contents will be used for a texture
+        texture = new THREE.Texture(canvas)
+        texture.needsUpdate = true;
+
+        var spriteMaterial = new THREE.SpriteMaterial({
+            map: texture,
+            useScreenCoordinates: false
+        });
+        var sprite = new THREE.Sprite(spriteMaterial);
+        sprite.scale.set(100, 50, 1.0);
+
+        return sprite;
     }
 
     function init() {
@@ -168,6 +255,24 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id) {
         renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
         renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
         renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
+
+        spritey = makeTextSprite(" Hello! ", {
+            fontsize: 24,
+            borderColor: {
+                r: 255,
+                g: 0,
+                b: 0,
+                a: 1.0
+            },
+            backgroundColor: {
+                r: 255,
+                g: 100,
+                b: 100,
+                a: 0.8
+            }
+        });
+        spritey.position.set(-85, 105, 55);
+        scene.add(spritey);
     }
 
     function initGraph() {
@@ -193,7 +298,7 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id) {
 
     function initAirPlane(){
         var loader = new THREE.JSONLoader();
-        loader.load('http://localhost:9041/js-resources/airplane.js',
+        loader.load('http://localhost:8091/js-resources/airplane.js',
             function(geometry, materials) {
                 airplane = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial(materials));
                 airplane.scale.set(0.2, 0.2, 0.2);
@@ -211,6 +316,8 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id) {
        light.position.copy( camera.position );
        renderer.setClearColor( 0xFFFFFFFF, 0 );
        renderer.render(scene, camera);
+
+
 
    }
 });
