@@ -1,4 +1,4 @@
-var runningController = function($scope, $http, $q, serverUrl, $interval, $sf_xy, $cookieStore) {
+var runningController = function($scope, $http, $q, serverUrl, $interval, $sf_xy, $cookieStore, $modal) {
 
     // Init variables
     $scope.current_time = 0;
@@ -75,8 +75,9 @@ var runningController = function($scope, $http, $q, serverUrl, $interval, $sf_xy
 
     var remiSiteData = [];
     var propSiteData = [];
-    $scope.start_simulation = function() {
-
+    var simultationStarted = false;
+    var intervalPromise;
+    $scope.start_simulation = function(start_simulation) {
 
         $scope.remi_simulation_data.siteConcentrationsData.forEach(function(data){
             remiSiteData.push(data.c1 + data.c2 + data.c3 + data.c4);
@@ -95,16 +96,129 @@ var runningController = function($scope, $http, $q, serverUrl, $interval, $sf_xy
 
         $http.put(serverUrl + "/sf/pnr_list", pnr_request).success(function (data) {
             $scope.pnr_data = data;
-            $interval(simulate, 1000, data.length);
+            if (start_simulation) {
+                simultationStarted = true;
+                intervalPromise = $interval(simulate, 1000, data.length);
+            }
+        });
+    }
+
+    $scope.updateInfusionList = function(sourceArray, newArray) {
+        var maxTime = sourceArray[sourceArray.length - 1].endTime;
+        var infusion = newArray[0];
+        infusion.time = infusion.time + maxTime;
+        infusion.endTime = infusion.endTime + maxTime;
+
+        sourceArray.push(infusion);
+
+        return sourceArray;
+    }
+
+
+    $scope.showDialog = function() {
+        //stopSimulation = true;
+        if (simultationStarted)
+        {
+            intervalPromise.cancel(0);
+        }
+
+        var modalInstance = $modal.open({
+            templateUrl: 'templates/updateDialog.html',
+            controller: 'updateSimulationDialogController',
+            size: 'lg',
+            resolve: {
+                selection: function () {
+                    $scope.selection = {procedure: $scope.procedure, procedureType: $scope.procedureType}
+                    return $scope.selection;
+                }
+            }
         });
 
+        modalInstance.result.then(function(update_info) {
+            // TODO change to be dinamic!
+            var curent_time = $scope.remi_simulation_data.siteConcentrationsData.length -1;
 
+            var remi_site_concentration_data = $scope.remi_simulation_data.siteConcentrationsData[curent_time];
+            var prop_site_concentration_data = $scope.prop_simulation_data.siteConcentrationsData[curent_time];
+
+            var remi_plasma_concentration_data = $scope.remi_simulation_data.plasmaConcentrationsData[curent_time];
+            var prop_plasma_concentration_data = $scope.prop_simulation_data.plasmaConcentrationsData[curent_time];
+
+            var remi_pump_infusion = [
+                { startTime: 0,                     endTime: update_info.time * 60,         infusion: update_info.x }
+            ];
+
+            var prop_pump_infusion = [
+                { startTime: 0,                     endTime: update_info.time * 60,         infusion: update_info.y }
+            ];
+
+            var remi_request = {
+                model: 0,
+                deltaTime : 15,
+                patient: patient,
+                pumpInfusion : remi_pump_infusion,
+                componentValuesDTO : {
+                    c1: remi_site_concentration_data.c1,
+                    c2: remi_site_concentration_data.c2,
+                    c3: remi_site_concentration_data.c3,
+                    c4: remi_site_concentration_data.c4
+                },
+                plasmaComponentValuesDTO: {
+                    p1: remi_plasma_concentration_data.p1,
+                    p2: remi_plasma_concentration_data.p2,
+                    p3: remi_plasma_concentration_data.p3
+                },
+                drugConcentration: 10
+            };
+
+            var prop_request = {
+                model: 1,
+                deltaTime : 15,
+                patient: patient,
+                pumpInfusion : prop_pump_infusion,
+                drugConcentration: 10,
+                componentValuesDTO : {
+                    c1: prop_site_concentration_data.c1,
+                    c2: prop_site_concentration_data.c2,
+                    c3: prop_site_concentration_data.c3,
+                    c4: prop_site_concentration_data.c4
+                },
+                plasmaComponentValuesDTO: {
+                    p1: prop_plasma_concentration_data.p1,
+                    p2: prop_plasma_concentration_data.p2,
+                    p3: prop_plasma_concentration_data.p3
+                },
+            };
+
+            $http.put(serverUrl + "/infusion/solve", remi_request).success(function (data) {
+                $scope.remi_simulation_data.infusionList =
+                    $scope.updateInfusionList($scope.remi_simulation_data.infusionList, data.infusionList)
+                $scope.remi_simulation_data.plasmaConcentrationsData =
+                    $scope.remi_simulation_data.plasmaConcentrationsData.concat(data.plasmaConcentrationsData);
+                $scope.remi_simulation_data.siteConcentrationsData =
+                    $scope.remi_simulation_data.siteConcentrationsData.concat(data.siteConcentrationsData);
+            });
+
+            $http.put(serverUrl + "/infusion/solve", prop_request).success(function (data) {
+                $scope.prop_simulation_data.infusionList =
+                    $scope.updateInfusionList($scope.prop_simulation_data.infusionList, data.infusionList)
+                $scope.prop_simulation_data.plasmaConcentrationsData =
+                    $scope.prop_simulation_data.plasmaConcentrationsData.concat(data.plasmaConcentrationsData);
+                $scope.prop_simulation_data.siteConcentrationsData =
+                    $scope.prop_simulation_data.siteConcentrationsData.concat(data.siteConcentrationsData);
+            });
+
+            $scope.start_simulation(simultationStarted);
+
+        });
     }
 
     function simulate() {
-        $scope.current_time = $scope.current_time + 1;
-        $scope.current_prop = propSiteData[$scope.current_time];
-        $scope.current_remi = remiSiteData[$scope.current_time];
-        $scope.current_pnr = $scope.pnr_data[$scope.current_time];
+       // if (!stopSimulation) {
+            $scope.current_time = $scope.current_time + 1;
+            $scope.current_prop = propSiteData[$scope.current_time];
+            $scope.current_remi = remiSiteData[$scope.current_time];
+            $scope.current_pnr = $scope.pnr_data[$scope.current_time];
+        //}
     }
 }
