@@ -7,8 +7,12 @@
     <link rel="stylesheet" href="css-libraries/jquery-ui.css">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet'  type='text/css'>
 
-    <script src="http://threejs.org/build/three.min.js"></script>
-    <script src="libraries/trackballControls.js"></script>
+   <!-- <script src="http://threejs.org/build/three.min.js"><script src="libraries/trackballControls.js"></script></script>-->
+    <script src="http://stemkoski.github.io/Three.js/js/Three.js"></script>
+    <script src="http://stemkoski.github.io/Three.js/js/TrackballControls.js"></script>
+
+
+
     <script src="https://code.angularjs.org/1.2.26/angular.min.js"></script>
     <script src="https://code.angularjs.org/1.2.26/angular-route.min.js"></script>
     <script src="https://code.angularjs.org/1.2.26/angular-resource.min.js"></script>
@@ -19,9 +23,17 @@
 
     <script src="libraries/angular-translate.js"></script>
     <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="http://stemkoski.github.io/Three.js/js/jquery-ui.js"></script>
     <script src="libraries/ui-bootstrap-tpls-0.11.2.min.js"></script>
     <script src="libraries/jquery-ui.js"></script>
     <script src="libraries/holder.js"></script>
+    <script src="libraries/THREEx.FullScreen.js"></script>
+    <script src="libraries/THREEx.KeyboardState.js"></script>
+    <script src="libraries/THREEx.WindowResize.js"></script>
+    <script src="libraries/parser.js"></script>
+    <script src="libraries/Detector.js"></script>
+    <script src="libraries/Stats.js"></script>
+    <script src="libraries/DAT.GUI.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/localization.js" charset="utf-8"></script>
     <script src="js/resources.js"></script>
@@ -41,11 +53,13 @@
     <script src="js/simulationController.js"></script>
     <script src="js/runningController.js"></script>
     <script src="js/inductionMethodsController.js"></script>
+    <script src="js/plotterController.js"></script>
 </head>
 <body>
 
 <ol class="nav nav-pills" id="link-list" role="tablist">
     <li role="presentation"><a href="#/home">Home</a></li>
+    <li role="presentation"><a href="#/plotter">Plot</a></li>
     <li role="presentation"><a href="#/license">License</a></li>
     <li role="presentation"><a href="#/checkList">Check List</a></li>
     <li role="presentation"><a href="#/information">Information</a></li>

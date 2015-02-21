@@ -77,7 +77,8 @@ GRAP.makeTextSprite = function makeTextSprite(message, parameters, x, y, z) {
     });
 
     var sprite = new THREE.Sprite(spriteMaterial);
-    sprite.scale.set(100, 50, 1.0);
+    //sprite.scale.set(100, 50, 1.0);
+    //sprite.scale.set(100, 50, 1.0);
     sprite.position.set(x, y, z);
 
     return {canvas: canvas , texture: texture, sprite: sprite};
@@ -85,7 +86,7 @@ GRAP.makeTextSprite = function makeTextSprite(message, parameters, x, y, z) {
 
 GRAP.createLabelBox = function(text, x, y, z) {
     var parameters ={
-        fontsize: 24,
+        fontsize: 120,
         borderColor: {
             r: 255,
             g: 0,
@@ -107,6 +108,38 @@ GRAP.changeTextSprit = function(text_sprite, base_text, text) {
     var context = text_sprite.canvas.getContext('2d');
 
     context.clearRect(0, 0, text_sprite.canvas.width, text_sprite.canvas.height);
-    context.fillText(base_text + text, 4, 28);
+    context.fillText(base_text + text, 15, 28);
     text_sprite.texture.needsUpdate = true;
 }
+
+GRAP.createTextCanvas = function (text, color, font, size) {
+        size = size || 16;
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var fontStr = (size + 'px ') + (font || 'Arial');
+        ctx.font = fontStr;
+        var w = ctx.measureText(text).width;
+        var h = Math.ceil(size);
+        canvas.width = w;
+        canvas.height = h;
+        ctx.font = fontStr;
+        ctx.fillStyle = color || 'black';
+        ctx.fillText(text, 0, Math.ceil(size * 0.8));
+        return canvas;
+    }
+
+GRAP.createText2D = function(text, color, font, size, segW, segH) {
+        var canvas = GRAP.createTextCanvas(text, color, font, 12);
+        var plane = new THREE.PlaneGeometry(canvas.width, canvas.height, segW, segH);
+        var tex = new THREE.Texture(canvas);
+        tex.needsUpdate = true;
+        var planeMat = new THREE.MeshBasicMaterial({
+            map: tex,
+            color: 0xffffff,
+            transparent: true
+        });
+        var mesh = new THREE.Mesh(plane, planeMat);
+        mesh.scale.set(0.5, 0.5, 0.5);
+        mesh.doubleSided = true;
+        return mesh;
+    }
