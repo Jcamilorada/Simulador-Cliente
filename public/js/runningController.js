@@ -1,5 +1,16 @@
 var runningController = function($scope, $http, $q, serverUrl, $interval, $sf_xy, $cookieStore, $modal) {
 
+
+    $scope.labels = ['10 s', '20 s', '30 s', '40 s', '50 s', '60 s', '70 s'];
+    $scope.series = ['Concentracion Plasma'];
+
+    $scope.data = [
+        [65, 59, 80, 81, 56, 55, 40]
+    ];
+
+    $scope.onClick = function (points, evt) {
+        console.log(points, evt);
+    };
     // Init variables
     $scope.current_time = 0;
 

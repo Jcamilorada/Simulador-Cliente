@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 class="modal-title">Seleccion de procedimiento</h3>
+    <h3 class="modal-title">Actualizar simualcion</h3>
 </div>
 <div class="modal-body">
     <form role="form">
@@ -7,6 +7,15 @@
             <span class="input-group-addon">Tiempo</span>
             <input type="number" class="form-control" ng-model="update.time">
         </div>
+        <div class="form-group input-group input-group-lg col-lg-12">
+            <span class="input-group-addon">Modo de actulización</span>
+            <select class="form-control" ng-model="update.mode">
+                <option value="1">Ahora</option>
+                <option value="2">Cuando finalize la simulación actual</option>
+            </select>
+        </div>
+        <hr>
+        <h3>Ajustar concentracion</h4>
         <div class="form-group input-group input-group-lg col-lg-12">
             <span class="input-group-addon">Concentración Remifentanilo</span>
             <input type="number" class="form-control" step="0.1" ng-model="update.x" ng-change="onUpdateX();">
@@ -19,12 +28,15 @@
             <span class="input-group-addon">PNR</span>
             <input type="number" class="form-control" step="0.1" ng-model="update.pnr" ng-change="onUpdatePNR();">
         </div>
+        <hr>
+        <h3>Ajustar valvula</h4>
         <div class="form-group input-group input-group-lg col-lg-12">
-            <span class="input-group-addon">Modo de actulización</span>
-            <select class="form-control" ng-model="update.mode">
-                <option value="1">Ahora</option>
-                <option value="2">Cuando finalize la simulación actual</option>
-            </select>
+            <span class="input-group-addon">Remifentanilo</span>
+            <input type="number" class="form-control" step="0.1" >
+        </div>
+        <div class="form-group input-group input-group-lg col-lg-12">
+            <span class="input-group-addon">Propofol</span>
+            <input type="number" class="form-control" step="0.1" >
         </div>
     </form>
 </div>

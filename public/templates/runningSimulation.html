@@ -1,6 +1,13 @@
 <div class="col-lg-1"></div>
 <div class="col-lg-10 centered">
     <tabset>
+        <tab heading="Concentración en Plasma">
+            <div class="col-lg-6 canvas-holder">
+                <canvas id="line1" class="chart chart-line" data="data" labels="labels" legend="true" series="series">
+                </canvas>
+            </div>
+
+        </tab>
         <tab heading="Información">
             <div class="col-lg-6">
                 <div class="thumbnail">
@@ -19,11 +26,6 @@
                     <button type="button" class="app-button btn btn-primary" ng-click="start_simulation(true)">Iniciar simulación</button>
                     <button type="button" class="app-button btn btn-primary" ng-click="showDialog()">Actualizar simulación</button>
                 </div>
-            </div>
-        </tab>
-        <tab heading="Concentración en Plasma">
-            <div class="col-lg-6">
-                <h1>Hola</h1>
             </div>
         </tab>
         <tab heading="Concentración en sitio">

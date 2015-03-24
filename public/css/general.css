@@ -32,3 +32,7 @@ th {
 .recommendation_p {
     margin: 0 0 0 0;
 }
+
+.canvas-holder .canvas {
+    width: 600px !important;
+    }

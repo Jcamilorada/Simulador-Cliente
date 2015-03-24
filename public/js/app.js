@@ -12,85 +12,6 @@ App.directive('myHolder', function() {
   };
 })
 
-function makeTextSprite( message, parameters )
-{
-	if ( parameters === undefined ) parameters = {};
-
-	var fontface = parameters.hasOwnProperty("fontface") ?
-		parameters["fontface"] : "Arial";
-
-	var fontsize = parameters.hasOwnProperty("fontsize") ?
-		parameters["fontsize"] : 18;
-
-	var borderThickness = parameters.hasOwnProperty("borderThickness") ?
-		parameters["borderThickness"] : 4;
-
-	var borderColor = parameters.hasOwnProperty("borderColor") ?
-		parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
-
-	var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
-		parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
-
-	//var spriteAlignment = parameters.hasOwnProperty("alignment") ?
-	//	parameters["alignment"] : THREE.SpriteAlignment.topLeft;
-
-	var spriteAlignment = THREE.SpriteAlignment.topLeft;
-
-
-	var canvas = document.createElement('canvas');
-	var context = canvas.getContext('2d');
-	context.font = "Bold " + fontsize + "px " + fontface;
-
-	// get size data (height depends only on font size)
-	var metrics = context.measureText( message );
-	var textWidth = metrics.width;
-
-	// background color
-	context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
-								  + backgroundColor.b + "," + backgroundColor.a + ")";
-	// border color
-	context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
-								  + borderColor.b + "," + borderColor.a + ")";
-
-	context.lineWidth = borderThickness;
-	roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
-	// 1.4 is extra height factor for text below baseline: g,j,p,q.
-
-	// text color
-	context.fillStyle = "rgba(0, 0, 0, 1.0)";
-
-	context.fillText( message, borderThickness, fontsize + borderThickness);
-
-	// canvas contents will be used for a texture
-	var texture = new THREE.Texture(canvas)
-	texture.needsUpdate = true;
-
-	var spriteMaterial = new THREE.SpriteMaterial(
-		{ map: texture, useScreenCoordinates: false, alignment: spriteAlignment } );
-	var sprite = new THREE.Sprite( spriteMaterial );
-	sprite.scale.set(100,50,1.0);
-	return sprite;
-}
-
-// function for drawing rounded rectangles
-function roundRect(ctx, x, y, w, h, r)
-{
-    ctx.beginPath();
-    ctx.moveTo(x+r, y);
-    ctx.lineTo(x+w-r, y);
-    ctx.quadraticCurveTo(x+w, y, x+w, y+r);
-    ctx.lineTo(x+w, y+h-r);
-    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-    ctx.lineTo(x+r, y+h);
-    ctx.quadraticCurveTo(x, y+h, x, y+h-r);
-    ctx.lineTo(x, y+r);
-    ctx.quadraticCurveTo(x, y, x+r, y);
-    ctx.closePath();
-    ctx.fill();
-	ctx.stroke();
-}
-
-
 App.config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.when('/home', {
@@ -133,9 +54,9 @@ App.config(['$routeProvider', function ($routeProvider) {
         controller: drugsConcentrationController
     });
 
-    $routeProvider.when('/pnr', {
-        templateUrl: 'templates/pnr.html',
-        controller: pnrController
+    $routeProvider.when('/pnr_proc', {
+        templateUrl: 'templates/pnr_proc.html',
+        controller: pnrProcController
     });
 
     $routeProvider.when('/simulation', {
@@ -166,6 +87,7 @@ App.constant('serverUrl', 'http://localhost:8092');
 App.constant('round_2d', function(num) {
     return Math.round(num * 100) / 100;
 });
+
 App.constant('$drawMesh', function($scope, serverUrl, div_id) {
 
     function round_2d(num) {
@@ -174,19 +96,20 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id) {
 
     var div_element =  $("#" + div_id);
 
-    var scene, camera, renderer, controls, airplane;
+    var scene, camera, renderer, controls, sphere;
+
     var geometry, material, mesh, light;
     var mouse = new THREE.Vector2();
     var objects = [];
+    var textMainMesh;
 
     // Graphic Labels
     var pnr_text_sprite, remi_text_sprite, prop_text_sprite;
 
-
     init();
     animate();
 
-    // Drag and drop implementation.
+    // Validate if click was pressed on the ball.
     function onDocumentMouseDown(event){
         event.preventDefault();
         var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
@@ -194,20 +117,24 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id) {
 
         var intersects = raycaster.intersectObjects(objects);
         if (intersects.length > 0) {
-            controls.enabled = false;
+            //controls.enabled = false;
             $scope.SELECTED = intersects[0].object;
         }
     }
 
+    // Drag the ball under the mesh graph.
     function onDocumentMouseMove(event){
         var offset = div_element.offset();
 
         event.preventDefault();
-        mouse.x = ( ( event.clientX - offset.left ) / div_element.width() ) * 2 - 1;
-        mouse.y = - ( ( event.clientY - offset.top ) / div_element.height() ) * 2 + 1;
+        // TODO: Added manualyy 15 because pading
+        mouse.x = 2 * ((event.clientX - offset.left - 15) / div_element.width()) - 1;
+        mouse.y = 1 - 2 * ((event.clientY - offset.top) / div_element.height());
 
         var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
         var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+
+
 
         if ($scope.SELECTED){
             var intersects = raycaster.intersectObject(mesh);
@@ -217,53 +144,75 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id) {
                 $scope.SELECTED.position.x = intersects[0].point.x;
                 $scope.SELECTED.position.y = intersects[0].point.y;
                 $scope.SELECTED.position.z = intersects[0].point.z;
-                $scope.$digest();
 
-                GRAP.changeTextSprit(pnr_text_sprite, "PNR: ", round_2d($scope.SELECTED.position.z / 10));
-                GRAP.changeTextSprit(remi_text_sprite, "Remifentanilo: ", round_2d($scope.SELECTED.position.x / 5));
-                GRAP.changeTextSprit(prop_text_sprite, "Propofil: ", round_2d($scope.SELECTED.position.y / 5));
+                $scope.Remifentanilo = intersects[0].point.x / 10;
+                $scope.Propofol = intersects[0].point.y / 10;
+                $scope.PNR = intersects[0].point.z;
+                $scope.$digest();
+            }
+        }
+
+        else {
+            var intersects = raycaster.intersectObject(sphere);
+
+            if (intersects.length > 0)
+            {
+                div_element.css('cursor', 'pointer');
+            }
+            else
+            {
+                div_element.css('cursor', 'default');
             }
         }
     }
 
+    // Release selected object.
     function onDocumentMouseUp(event){
         event.preventDefault();
-        controls.enabled = true;
         $scope.SELECTED = null;
     }
 
     function init() {
-        var div_element =  $("#" + div_id);
+        div_element =  $("#" + div_id);
 
         scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera( 75, div_element.width() / div_element.height(), 1, 10000 );
-        camera.position.z = 90;
-        //controls = new THREE.TrackballControls(camera, div_element);
+
 
         initGraph();
         initPlane();
-        initAirPlane();
+        initDraggableComponent();
         initAxes();
-        initMainLabels();
+        initCamera();
 
         renderer = new THREE.WebGLRenderer();
         renderer.setSize( div_element.width(), div_element.height());
-        controls = new THREE.TrackballControls(camera, div_element.get(0));
 
         div_element.append(renderer.domElement);
 
-       // Create a light.
+        // Point light.
         light = new THREE.PointLight(0xffffff);
         light.intensity = 1;
         scene.add(light);
 
-        var light2 = new THREE.AmbientLight( 0x404040 ); // soft white light
-        scene.add( light2 );
+        // Ambient light
+        var ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
 
-        //renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
-        //renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
-        //renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
+        renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
+        renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
+        renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
+    }
 
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(
+            75,         // Field of view
+            div_element.width() / div_element.height(),  // Aspect ratio
+            1,         // Near
+            10000       // Far
+        );
+        camera.position.set(-103, -119, 140);
+        camera.up = new THREE.Vector3(0,0,1);
+        camera.lookAt(scene.position);
     }
 
     function initGraph() {
@@ -273,27 +222,25 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id) {
         var yMin = 0;
         var yMax = 100;
 
-
         var xRange = xMax - xMin;
         var yRange = yMax - yMin;
 
         var zFuncText = "10 * (0.0828 * (x* 0.1) * (y *0.1))^ 5.1550 / (1 + (0.0828 * (x* 0.1) * (y *0.1))^ 5.1550)";
-
         var segments = 60;
-
         var zFunc = Parser.parse(zFuncText).toJSFunction( ['x','y'] );
         var meshFunction = function(x, y)
         {
             x = xRange * x + xMin;
             y = yRange * y + yMin;
-            var z = zFunc(x,y);
-            if ( isNaN(z) )
-                return new THREE.Vector3(0,0,0); // TODO: better fix
-            else
-                return new THREE.Vector3(x, y, z*10);
-        };
-       var graphGeometry = new THREE.ParametricGeometry( meshFunction, segments, segments, true );
+            var z = zFunc(x, y);
 
+            if ( isNaN(z) )
+                return new THREE.Vector3(0,0,0);
+            else
+                return new THREE.Vector3(x, y, z * 10);
+        };
+
+       var graphGeometry = new THREE.ParametricGeometry( meshFunction, segments, segments, true );
         graphGeometry.computeBoundingBox();
         var zMin = graphGeometry.boundingBox.min.z;
         var zMax = graphGeometry.boundingBox.max.z;
@@ -310,6 +257,7 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id) {
             color.setHSL( 0.7 * (zMax - point.z) / zRange, 1, 0.5 );
             graphGeometry.colors[i] = color; // use this array for convenience
         }
+
         // copy the colors as necessary to the face's vertexColors array.
         for ( var i = 0; i < graphGeometry.faces.length; i++ )
         {
@@ -384,93 +332,43 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id) {
        }
     }
 
-    function initMainLabels() {
-        var xTitle = makeTextSprite( "Remifentanilo", { fontsize: 10, backgroundColor: {r:255, g:100, b:100, a:1} } );
-        xTitle.position.x = 110;
-        xTitle.position.y = 0;
-        xTitle.position.z = 0;
-        scene.add( xTitle );
-
-       for(var x =10; x < 110; x = x + 10) {
-            var xTitle = makeTextSprite(x/10, { fontsize: 10, backgroundColor: {r:255, g:100, b:100, a:1} } );
-            xTitle.position.x = x;
-            xTitle.position.y = 0;
-            xTitle.position.z = 0;
-            scene.add(xTitle);
-       }
-
-        var yTitle = makeTextSprite( "Propofsil", { fontsize: 10, backgroundColor: {r:255, g:100, b:100, a:1} } );
-        yTitle.position.x = -30;
-        yTitle.position.y = 110;
-        yTitle.position.z = 0;
-        scene.add( yTitle );
-
-       for(var y =10; y < 110; y = y + 10) {
-            var xTitle = makeTextSprite(y/10, { fontsize: 10, backgroundColor: {r:255, g:100, b:100, a:1} } );
-            xTitle.position.x = -4;
-            xTitle.position.y = y;
-            xTitle.position.z = 0;
-            scene.add(xTitle);
-       }
-
-        var zTitle = makeTextSprite( "Propofol", { fontsize: 10, backgroundColor: {r:255, g:100, b:100, a:1} } );
-        zTitle.position.x = -30;
-        zTitle.position.y = 110;
-        zTitle.position.z = 100;
-        scene.add( zTitle );
-
-       for(var z =10; z < 110; z = z + 10) {
-            var xTitle = makeTextSprite((z/10) + "%" , { fontsize: 10, backgroundColor: {r:255, g:100, b:100, a:1} } );
-            xTitle.position.x = -4;
-            xTitle.position.y = 110;
-            xTitle.position.z = z;
-            scene.add(xTitle);
-       }
-
-    }
-
+    /* Generates the planes xz, xy, yz. */
     function initPlane(){
         //grid xz
-         var gridXZ = new THREE.GridHelper(50, 1);
+         var gridXZ = new THREE.GridHelper(50, 5);
          gridXZ.position.set(50, 100, 50);
          scene.add(gridXZ);
 
          //grid xy
-         var gridXY = new THREE.GridHelper(50, 1);
+         var gridXY = new THREE.GridHelper(50, 5);
          gridXY.rotation.x = Math.PI/2;
-         gridXY.position.set(50, 50, -0.1);
-         gridXY.setColors( new THREE.Color(0xff0000), new THREE.Color(0xffffff) );
+         gridXY.position.set(50, 50, -0.5);
+         gridXY.setColors(new THREE.Color(0xff0000), new THREE.Color(0xffffff) );
          scene.add(gridXY);
 
          //grid yz
-         var gridYZ = new THREE.GridHelper(50, 0.5);
+         var gridYZ = new THREE.GridHelper(50, 5);
          gridYZ.position.set(100, 50, 50);
          gridYZ.rotation.z = Math.PI/2;
-         gridXY.setColors( new THREE.Color(0xff0000), new THREE.Color(0xffffff) );
+         gridXY.setColors(new THREE.Color(0xff0000), new THREE.Color(0xffffff) );
          scene.add(gridYZ);
     }
 
-    function initAirPlane(){
-        var radius = 0.25, segments = 16, rings = 16;
-        var sphereMaterial =
-            new THREE.MeshLambertMaterial(
-            {
-              color: 0xCC0000
-            });
-        var sphere = new THREE.Mesh(
-            new THREE.SphereGeometry(
-                radius,
-                segments,
-                rings),
-          sphereMaterial);
+    /* Creates the draggable component. */
+    function initDraggableComponent(){
+        var radius = 4, segments = 16, rings = 16;
+        var sphereMaterial = new THREE.MeshLambertMaterial({color: 0xCC0000});
+        sphere = new THREE.Mesh(new THREE.SphereGeometry(radius, segments, rings), sphereMaterial);
+
         scene.add(sphere);
+        objects.push(sphere);
+        $scope.sphere = sphere;
     }
 
    function animate() {
        requestAnimationFrame(animate);
-       controls.update();
-       light.position.copy( camera.position );
-       renderer.setClearColor( 0xFFFFFFFF, 0 );
+       light.position.copy(camera.position);
+       renderer.setClearColor(0xffffff, 1);
        renderer.render(scene, camera);
    }
 });
