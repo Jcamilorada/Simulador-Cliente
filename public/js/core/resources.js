@@ -31,7 +31,6 @@ App.factory("$induction_methods", function($resource, serverUrl) {
   return $resource(serverUrl + "/methods");
 });
 
-
 // Surface Model resources
 App.factory("$sf_pnr", function($resource, serverUrl) {
   return $resource(serverUrl + "/sf/x/:x/y/:y");

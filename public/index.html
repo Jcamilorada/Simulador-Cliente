@@ -4,14 +4,10 @@
     <title>Simulador Cliente</title>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/general.css">
-    <link rel="stylesheet" href="css-libraries/jquery-ui.css">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet'  type='text/css'>
 
-    <script src="libraries/dat.gui.js"></script>
     <script src="http://threejs.org/build/three.min.js"></script>
-    <!--<script src="libraries/trackballControls.js"></script>-->
 
-    <script src="libraries/helvetiker_regular.typeface.js"></script>
     <script src="https://code.angularjs.org/1.2.26/angular.min.js"></script>
     <script src="https://code.angularjs.org/1.2.26/angular-route.min.js"></script>
     <script src="https://code.angularjs.org/1.2.26/angular-resource.min.js"></script>
@@ -22,23 +18,18 @@
 
     <script src="libraries/angular-translate.js"></script>
     <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="http://stemkoski.github.io/Three.js/js/jquery-ui.js"></script>
     <script src="libraries/ui-bootstrap-tpls-0.11.2.min.js"></script>
-    <script src="libraries/jquery-ui.js"></script>
     <script src="libraries/holder.js"></script>
-    <script src="libraries/THREEx.FullScreen.js"></script>
-    <script src="libraries/THREEx.KeyboardState.js"></script>
-    <script src="libraries/THREEx.WindowResize.js"></script>
     <script src="libraries/parser.js"></script>
-    <script src="libraries/Detector.js"></script>
-    <script src="libraries/Stats.js"></script>
     <script src="libraries/DAT.GUI.min.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/localization.js" charset="utf-8"></script>
-    <script src="js/resources.js"></script>
-    <script src="js/directives.js"></script>
 
-    <!-- Controllers-->
+    <script src="js/app.js"></script>
+    <script src="js/core/angularConstants.js"></script>
+    <script src="js/core/routeModule.js"></script>
+    <script src="js/core/localization.js" charset="utf-8"></script>
+    <script src="js/core/resources.js"></script>
+
+     <!-- Controllers-->
     <script src="js/informationController.js"></script>
     <script src="js/homeController.js"></script>
     <script src="js/licenseController.js"></script>
@@ -49,10 +40,10 @@
     <script src="js/drugsConcentrationController.js" charset="UTF-8"></script>
     <script src="js/drugsProcedureController.js"></script>
     <script src="js/pnrProcController.js"></script>
+    <script src="js/pnrIndController.js"></script>
     <script src="js/simulationController.js"></script>
     <script src="js/runningController.js"></script>
     <script src="js/inductionMethodsController.js"></script>
-    <script src="js/plotterController.js"></script>
 </head>
 <body>
 
@@ -67,6 +58,7 @@
     <li role="presentation"><a href="#/drugsProcedure">Mdc Procedimiento</a></li>
     <li role="presentation"><a href="#/drugsConcentration">Mdc concentracion</a></li>
     <li role="presentation"><a href="#/pnr_proc">PNR Procedimiento Seleccion</a></li>
+    <li role="presentation"><a href="#/ind_proc">PNR Induccion Seleccion</a></li>
     <li role="presentation"><a href="#/simulation">Simulacion - Conf</a></li>
     <li role="presentation"><a href="#/running">Simulacion</a></li>
 </ol>

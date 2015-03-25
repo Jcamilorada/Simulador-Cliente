@@ -1,27 +1,22 @@
-var pnrProcController = function($scope, $drawMesh, round_2d, serverUrl, $sf_y, $sf_x, $sf_xy, $cookieStore, $cookies)
+var pnrIndController = function($scope, $drawMesh, round_2d, serverUrl, $sf_y, $sf_x, $sf_xy, $cookieStore, $cookies)
 {
-    var gui;
-    $scope.$on('$locationChangeStart', function(event, next, current) {
-        gui.destroy();
-    });
-
     // factor value for concentrations.
     var factor = 10;
     var graphOperations;
 
-    var proc_time = $cookies["proc_time"];
-    if (angular.isDefined(proc_time)) {
-        $scope.Tiempo = Number(proc_time);
+    var ind_time = $cookies["ind_time"];
+    if (angular.isDefined(ind_time)) {
+        $scope.Tiempo = Number(ind_time);
     }
     else
     {
         $scope.Tiempo = Number(120);
     }
 
-    var proc_pnr = $cookies["proc_pnr"];
-    if (angular.isDefined(proc_pnr))
+    var ind_pnr = $cookies["ind_pnr"];
+    if (angular.isDefined(ind_pnr))
     {
-        $scope.proc_pnr = $cookieStore.get("proc_pnr");
+        $scope.ind_pnr = $cookieStore.get("ind_pnr");
     }
     else
     {
@@ -43,7 +38,7 @@ var pnrProcController = function($scope, $drawMesh, round_2d, serverUrl, $sf_y, 
 
     createControls = function()
     {
-        gui = new dat.GUI({ width: 400 });
+        var gui = new dat.GUI({ width: 400 });
         var zController = gui.add($scope, 'PNR', 0, 100).name('PNR %').listen();
         var xController = gui.add($scope, 'Remifentanilo', 1, 10).name('Remifentanilo ng/ml').listen();
         var yController = gui.add($scope, 'Propofol', 1, 10).name('Propofol mcg/ml').listen();
