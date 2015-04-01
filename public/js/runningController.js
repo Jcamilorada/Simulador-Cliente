@@ -1,235 +1,73 @@
-var runningController = function($scope, $http, $q, serverUrl, $interval, $sf_xy, $cookieStore, $modal) {
+var runningController = function($scope, $http, $q, serverUrl, $interval, $sf_xy, $cookieStore, $modal, $drawMesh) {
 
-
-    $scope.labels = ['10 s', '20 s', '30 s', '40 s', '50 s', '60 s', '70 s'];
-    $scope.series = ['Concentracion Plasma'];
-
-    $scope.data = [
-        [65, 59, 80, 81, 56, 55, 40]
-    ];
-
-    $scope.onClick = function (points, evt) {
-        console.log(points, evt);
-    };
-    // Init variables
-    $scope.current_time = 0;
-
-
-    // Simulation information
-    var induction_time = $cookieStore.get('ind_time') * 60;
-    var induction_pnr = $cookieStore.get('ind_pnr');
-
-    var procedure_time = $cookieStore.get('proc_time') * 60;
-    var procedure_pnr = $cookieStore.get('proc_pnr');
-
-    var patient = $cookieStore.get('patient');
-
-    // First we calculate the necessary infusions based on pnr value.
-    // Induction PNR
-    var remi_ind_inf, prop_ind_inf;
-    var ind_request = $sf_xy.get({pnr: induction_pnr}, function (data) {
-        remi_ind_inf = data.x;
-        prop_ind_inf = data.y;
-     });
-
-    // Procedure PNR
-    var remi_proc_inf, prop_proc_inf;
-    var proc_request = $sf_xy.get({pnr: procedure_pnr}, function (data) {
-        remi_proc_inf = data.x;
-        prop_proc_inf = data.y;
-     });
-
-    $q.all([ind_request.$promise, proc_request.$promise]).then(function() {
-        var remi_pump_infusion = [
-                { startTime: 0,                     endTime:induction_time,         infusion: remi_ind_inf },
-                { startTime: induction_time,        endTime: procedure_time + induction_time,    infusion: remi_proc_inf }
-            ];
-
-        var prop_pump_infusion = [
-                { startTime: 0,                     endTime:induction_time,         infusion: prop_ind_inf },
-                { startTime: induction_time,        endTime: procedure_time + induction_time,    infusion: prop_proc_inf },
-            ];
-
-
-        var deltaTime = 15;
-
-        var remi_request = {
-            model: 0,
-            deltaTime : deltaTime,
-            patient: patient,
-            pumpInfusion : remi_pump_infusion,
-            componentValuesDTO : {c1: 0, c2: 0, c3: 0, c4: 0},
-            plasmaComponentValuesDTO: {p1: 0, p2: 0, p3: 0},
-            drugConcentration: 10
-            };
-
-        var prop_request = {
-            model: 1,
-            deltaTime : deltaTime,
-            patient: patient,
-            pumpInfusion : prop_pump_infusion,
-            drugConcentration: 10,
-            componentValuesDTO : {c1: 0, c2: 0, c3: 0, c4: 0},
-            plasmaComponentValuesDTO: {p1: 0, p2: 0, p3: 0},
-            };
-
-        $http.put(serverUrl + "/infusion/solve", remi_request).success(function (data) {
-            $scope.remi_simulation_data = data;
-        });
-
-        $http.put(serverUrl + "/infusion/solve", prop_request).success(function (data) {
-            $scope.prop_simulation_data = data;
-        });
-
-    });
-
-
-    var remiSiteData = [];
-    var propSiteData = [];
-    var simultationStarted = false;
-    var intervalPromise;
-    $scope.start_simulation = function(start_simulation) {
-
-        $scope.remi_simulation_data.siteConcentrationsData.forEach(function(data){
-            remiSiteData.push(data.c1 + data.c2 + data.c3 + data.c4);
-        });
-
-        $scope.prop_simulation_data.siteConcentrationsData.forEach(function(data){
-            propSiteData.push(data.c1 + data.c2 + data.c3 + data.c4);
-        });
-
-
-        var pnr_request =
-        {
-            'xvalues' : remiSiteData,
-            'yvalues' : propSiteData
-        };
-
-        $http.put(serverUrl + "/sf/pnr_list", pnr_request).success(function (data) {
-            $scope.pnr_data = data;
-            if (start_simulation) {
-                simultationStarted = true;
-                intervalPromise = $interval(simulate, 1000, data.length);
-            }
-        });
-    }
-
-    $scope.updateInfusionList = function(sourceArray, newArray) {
-        var maxTime = sourceArray[sourceArray.length - 1].endTime;
-        var infusion = newArray[0];
-        infusion.time = infusion.time + maxTime;
-        infusion.endTime = infusion.endTime + maxTime;
-
-        sourceArray.push(infusion);
-
-        return sourceArray;
+    createReadOnly = function(dataGui, value, name)
+    {
+        return dataGui.add($scope, 'value').name('name');
     }
 
 
-    $scope.showDialog = function() {
-        //stopSimulation = true;
-        if (simultationStarted)
+    createControls = function()
+    {
+        // Readonly Information
+        $scope.velocidad_infunsion = 0;
+        $scope.dosis = 0;
+        $scope.volumen_infundir = 0;
+        $scope.tiempo_alcanzar = 0;
+        $scope.pnr_actual = 0;
+        $scope.remi_actual = 0;
+        $scope.prop_actual = 0;
+        $scope.tiempo_actual = 0;
+
+        // Dynamic Information
+        $scope.PNR = 50;
+        $scope.remi= 7;
+        $scope.prop = 7;
+        $scope.tiempo = 120;
+        $scope.velocidad_sim = 1;
+
+        $scope.actualizar = function()
         {
-            intervalPromise.cancel(0);
+            console.log("clicked")
         }
 
-        var modalInstance = $modal.open({
-            templateUrl: 'templates/updateDialog.html',
-            controller: 'updateSimulationDialogController',
-            size: 'lg',
-            resolve: {
-                selection: function () {
-                    $scope.selection = {procedure: $scope.procedure, procedureType: $scope.procedureType}
-                    return $scope.selection;
-                }
-            }
-        });
+        $scope.stop_start = function()
+        {
+            console.log("clicked")
+        }
 
-        modalInstance.result.then(function(update_info) {
-            // TODO change to be dinamic!
-            var curent_time = $scope.remi_simulation_data.siteConcentrationsData.length -1;
+        // Dynamic Controls
+        var updateGui = new dat.GUI({ width: 500 });
 
-            var remi_site_concentration_data = $scope.remi_simulation_data.siteConcentrationsData[curent_time];
-            var prop_site_concentration_data = $scope.prop_simulation_data.siteConcentrationsData[curent_time];
+        var pnrFolder = updateGui.addFolder('Actualizar Pnr');
+        var pnrController = pnrFolder.add($scope, 'PNR', 0, 100).name('PNR %').listen();
+        var remiController = pnrFolder.add($scope, 'remi', 1, 10).name('Remifentanilo ng/ml').listen();
+        var propController = pnrFolder.add($scope, 'prop', 1, 10).name('Propofol mcg/ml').listen();
+        var tiempoController = pnrFolder.add($scope, 'tiempo').name('Tiempo (minutos)');
+        pnrFolder.add($scope, 'actualizar').name('Actualizar');
 
-            var remi_plasma_concentration_data = $scope.remi_simulation_data.plasmaConcentrationsData[curent_time];
-            var prop_plasma_concentration_data = $scope.prop_simulation_data.plasmaConcentrationsData[curent_time];
+        var confFolder = updateGui.addFolder('Configuracion');
+        var velController = confFolder.add($scope, 'velocidad_sim', [ '1x', '2x', '3x' ] ).name('Velocidad de simulacion');
+        var stop_start = confFolder.add($scope, 'stop_start').name('Iniciar/Detener Simulacion');
 
-            var remi_pump_infusion = [
-                { startTime: 0,                     endTime: update_info.time * 60,         infusion: update_info.x }
-            ];
+        // Readonly Controls
+        var dataGui = new dat.GUI({ autoPlace: false, width: 500});
+        var velInfusionController = dataGui.add($scope, 'velocidad_infunsion').name('Velocidad Infusion');
+        var dosisController = dataGui.add($scope, 'dosis').name('Dosis');
+        var volInfundirController = dataGui.add($scope, 'volumen_infundir').name('Volumen a infundir');
+        var tiempoAlcaController = dataGui.add($scope, 'tiempo_alcanzar').name('Tiempo alcanzar');
+        var pnrActualController = dataGui.add($scope, 'pnr_actual').name('PNR actual');
+        var remiActualController = dataGui.add($scope, 'remi_actual').name('Remifentanilo ng/ml');
+        var popActualController = dataGui.add($scope, 'prop_actual').name('Propofol mcg/ml');
+        var tiempoActController = dataGui.add($scope, 'tiempo_actual').name('Tiempo actual');
+        $(dataGui.domElement).find("input").prop('disabled',true);
 
-            var prop_pump_infusion = [
-                { startTime: 0,                     endTime: update_info.time * 60,         infusion: update_info.y }
-            ];
-
-            var remi_request = {
-                model: 0,
-                deltaTime : 15,
-                patient: patient,
-                pumpInfusion : remi_pump_infusion,
-                componentValuesDTO : {
-                    c1: remi_site_concentration_data.c1,
-                    c2: remi_site_concentration_data.c2,
-                    c3: remi_site_concentration_data.c3,
-                    c4: remi_site_concentration_data.c4
-                },
-                plasmaComponentValuesDTO: {
-                    p1: remi_plasma_concentration_data.p1,
-                    p2: remi_plasma_concentration_data.p2,
-                    p3: remi_plasma_concentration_data.p3
-                },
-                drugConcentration: 10
-            };
-
-            var prop_request = {
-                model: 1,
-                deltaTime : 15,
-                patient: patient,
-                pumpInfusion : prop_pump_infusion,
-                drugConcentration: 10,
-                componentValuesDTO : {
-                    c1: prop_site_concentration_data.c1,
-                    c2: prop_site_concentration_data.c2,
-                    c3: prop_site_concentration_data.c3,
-                    c4: prop_site_concentration_data.c4
-                },
-                plasmaComponentValuesDTO: {
-                    p1: prop_plasma_concentration_data.p1,
-                    p2: prop_plasma_concentration_data.p2,
-                    p3: prop_plasma_concentration_data.p3
-                },
-            };
-
-            $http.put(serverUrl + "/infusion/solve", remi_request).success(function (data) {
-                $scope.remi_simulation_data.infusionList =
-                    $scope.updateInfusionList($scope.remi_simulation_data.infusionList, data.infusionList)
-                $scope.remi_simulation_data.plasmaConcentrationsData =
-                    $scope.remi_simulation_data.plasmaConcentrationsData.concat(data.plasmaConcentrationsData);
-                $scope.remi_simulation_data.siteConcentrationsData =
-                    $scope.remi_simulation_data.siteConcentrationsData.concat(data.siteConcentrationsData);
-            });
-
-            $http.put(serverUrl + "/infusion/solve", prop_request).success(function (data) {
-                $scope.prop_simulation_data.infusionList =
-                    $scope.updateInfusionList($scope.prop_simulation_data.infusionList, data.infusionList)
-                $scope.prop_simulation_data.plasmaConcentrationsData =
-                    $scope.prop_simulation_data.plasmaConcentrationsData.concat(data.plasmaConcentrationsData);
-                $scope.prop_simulation_data.siteConcentrationsData =
-                    $scope.prop_simulation_data.siteConcentrationsData.concat(data.siteConcentrationsData);
-            });
-
-            $scope.start_simulation(simultationStarted);
-
-        });
+        var container = document.getElementById('induction_mesh');
+        dataGui.domElement.style.position = 'absolute';
+        dataGui.domElement.style.left = '10px';
+        dataGui.domElement.style.top = '0px';
+        container.appendChild(dataGui.domElement);
     }
 
-    function simulate() {
-       // if (!stopSimulation) {
-            $scope.current_time = $scope.current_time + 1;
-            $scope.current_prop = propSiteData[$scope.current_time];
-            $scope.current_remi = remiSiteData[$scope.current_time];
-            $scope.current_pnr = $scope.pnr_data[$scope.current_time];
-        //}
-    }
+    graphOperations = $drawMesh($scope, serverUrl, 'induction_mesh', true);
+    createControls();
 }

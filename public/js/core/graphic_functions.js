@@ -62,9 +62,9 @@ GRAP.getGraphMesh = function(){
     return new THREE.Mesh(graphGeometry, wireMaterial);
 }
 
-GRAP.getSphere = function() {
+GRAP.getSphere = function(color) {
     var radius = 4, segments = 16, rings = 16;
-    var sphereMaterial = new THREE.MeshLambertMaterial({color: 0xCC0000});
+    var sphereMaterial = new THREE.MeshLambertMaterial({color: color});
 
     return new THREE.Mesh(new THREE.SphereGeometry(radius, segments, rings), sphereMaterial);
 }
