@@ -29,8 +29,34 @@ p{
 th {
     text-align: center;
 }
+
 .recommendation_p {
     margin: 0 0 0 0;
+    text-transform: uppercase;
+    font-size: 11px;
+
+}
+
+.check-list-title {
+    color: white;
+    margin-top: 0px;
+    background-color: rgb(71, 72, 71);
+    background-clip: content-box;
+}
+
+.check-list-entrada {
+    background-color: rgb(248, 219, 183);
+    background-clip: content-box;
+}
+
+.check-list-pausa {
+    background: rgb(191, 223, 200);
+    background-clip: content-box;
+}
+
+.check-list-salida {
+    background: rgb(181, 187, 211);
+    background-clip: content-box;
 }
 
 .canvas-holder .canvas {

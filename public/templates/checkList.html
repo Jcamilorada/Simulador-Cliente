@@ -4,14 +4,14 @@
         <div class="col-lg-11"><p class="recommendation_p" type="text" ng-bind-html="r.description" readonly="true"></div>
     </div>
     <div ng-if="r.sentenceType == 2">
-        <div class="col-lg-12"><p type="text" ng-bind-html="r.description"></div>
+        <div class="col-lg-12"><p class="recommendation_p" type="text" ng-bind-html="r.description"></div>
         <div class="col-lg-12" ng-repeat="o in r.alternatives">
             <div class="col-lg-1"><input type="radio" name="group_{{r.id}}"></div>
             <div class="col-lg-11"><p class="recommendation_p" type="text" ng-bind-html="o" readonly="true"/></div>
         </div>
     </div>
     <div ng-if="r.sentenceType == 3">
-        <div class="col-lg-12"><p type="text" ng-bind-html="r.description"></div>
+        <div class="col-lg-12"><p class="recommendation_p" type="text" ng-bind-html="r.description"></div>
         <div class="col-lg-12" ng-repeat="o in r.alternatives">
             <div class="col-lg-1"><input type="checkbox"></div>
             <div class="col-lg-11"><p class="recommendation_p" type="text" ng-bind-html="o" readonly="true"/></div>
@@ -19,23 +19,23 @@
     </div>
 </script>
 <div class="col-lg-1"></div>
-<div class="col-lg-10 main-content">
-    <div class="col-lg-4">
-        <h2>Entrada</h2>
-        <form name="checkList">
+<div class="col-lg-10 main-content ">
+    <div class="col-lg-4 check-list-entrada">
+        <h2 class="check-list-title">Entrada</h2>
+        <form name="checkList" >
             <div ng-repeat="r in type1_recommendations" ng-include="'recommendation_list'">
             </div>
         </form>
     </div>
-    <div class="col-lg-4">
-        <h2>Pausa Quirúrgica</h2>
+    <div class="col-lg-4 check-list-pausa">
+        <h2 class="check-list-title">Pausa Quirúrgica</h2>
         <form name="checkList">
             <div ng-repeat="r in type2_recommendations" ng-include="'recommendation_list'">
             </div>
         </form>
     </div>
-    <div class="col-lg-4">
-        <h2>Salida</h2>
+    <div class="col-lg-4 check-list-salida">
+        <h2 class="check-list-title">Salida</h2>
         <form name="checkList">
             <div ng-repeat="r in type3_recommendations" ng-include="'recommendation_list'">
             </div>
