@@ -14,7 +14,6 @@ var inductionMethodsController = function($scope, $induction_methods, $cookieSto
 
     $scope.onChange = function() {
         $cookieStore.put("induction_method", $scope.induction_method);
-        $cookieStore.remove("ind_pnr");
     }
 
     $scope.onLoad();

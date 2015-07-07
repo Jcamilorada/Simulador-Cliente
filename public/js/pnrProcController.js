@@ -131,6 +131,8 @@ var pnrProcController = function($scope, $drawMesh, round_2d, serverUrl, $sf_y, 
     }
 
     $scope.$on('$locationChangeStart', function(event, next, current) {
+        onChange(prop_c, round_2d($scope.Propofol));
+        onChange(remi_c, round_2d($scope.Remifentanilo));
         gui.destroy();
     });
 

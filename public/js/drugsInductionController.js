@@ -1,5 +1,4 @@
 var drugsInductionController = function($scope, $drugs, $cookieStore, $cookies){
-
     $scope.onLoad = function() {
         var induction_drug1 = $cookies["induction_drug1"];
         var induction_drug2 = $cookies["induction_drug2"];
