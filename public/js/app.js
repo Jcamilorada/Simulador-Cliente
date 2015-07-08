@@ -1,4 +1,5 @@
-var App = angular.module('AngularApp', ['routeModule', 'ngResource', 'ngSanitize', 'ui.bootstrap', 'ngCookies', 'pascalprecht.translate']);
+var App =angular.module(
+'AngularApp',['routeModule', 'ngResource', 'ngSanitize', 'ui.bootstrap', 'ngCookies', 'pascalprecht.translate']);
 
 // Holder js Fix
 App.directive('myHolder', function() {

@@ -51,11 +51,6 @@ routeModule.config(['$routeProvider', function ($routeProvider) {
         controller: pnrIndController
     });
 
-    $routeProvider.when('/simulation', {
-        templateUrl: 'templates/simulation.html',
-        controller: simulationController
-    });
-
     $routeProvider.when('/running', {
         templateUrl: 'templates/runningSimulation.html',
         controller: runningController

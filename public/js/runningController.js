@@ -1,10 +1,45 @@
-var runningController = function($scope, $http, $q, serverUrl, $interval, $sf_xy, $cookieStore, $modal, $drawMesh) {
+var runningController = function($scope, $http, $q, $drawMesh, webstore, pump, utils, serverUrl) {
 
-    createReadOnly = function(dataGui, value, name)
-    {
-        return dataGui.add($scope, 'value').name('name');
-    }
+    /* time information */
+    var ind_time = webstore.get('time_ind');
+    var proc_time = webstore.get('time_proc');
 
+    /* infusion remi */
+    var r_ind_inf = webstore.get('remi_ind');
+    var r_proc_inf = webstore.get('remi_proc');
+
+    /* infusion propofol */
+    var p_ind_inf = webstore.get('prop_ind');
+    var p_proc_inf = webstore.get('prop_proc');
+
+    var patient = webstore.get('patient');
+
+    /* request information */
+    var remi_request_py = pump.remi_request(patient, ind_time, proc_time, r_ind_inf, r_proc_inf);
+    var prop_request_py = pump.prop_request(patient, ind_time, proc_time, p_ind_inf, p_proc_inf);
+
+    var remi_request = $http.put(serverUrl + "/infusion/solve", remi_request_py);
+    remi_request.success(function (data) {
+        $scope.remi_simulation_data = data;
+    });
+
+    var prop_request = $http.put(serverUrl + "/infusion/solve", prop_request_py).success(function (data) {
+        $scope.prop_simulation_data = data;
+    });
+
+    $q.all([remi_request, prop_request]).then(function() {
+        var remi_cocentrations = utils.extractArray($scope.remi_simulation_data.siteConcentrationsData, 'total');
+        var prop_cocentrations = utils.extractArray($scope.prop_simulation_data.siteConcentrationsData, 'total');
+
+        var pnrPayload = {
+            xvalues : remi_cocentrations,
+            yvalues : prop_cocentrations
+        }
+
+        var prop_request = $http.put(serverUrl + "/sf/pnr_list", pnrPayload).success(function (data) {
+            $scope.pnr_simulation_data = data;
+        });
+    });
 
     createControls = function()
     {
@@ -59,7 +94,7 @@ var runningController = function($scope, $http, $q, serverUrl, $interval, $sf_xy
         var remiActualController = dataGui.add($scope, 'remi_actual').name('Remifentanilo ng/ml');
         var popActualController = dataGui.add($scope, 'prop_actual').name('Propofol mcg/ml');
         var tiempoActController = dataGui.add($scope, 'tiempo_actual').name('Tiempo actual');
-        $(dataGui.domElement).find("input").prop('disabled',true);
+        $(dataGui.domElement).find("input").prop('disabled', true);
 
         var container = document.getElementById('induction_mesh');
         dataGui.domElement.style.position = 'absolute';
@@ -68,6 +103,6 @@ var runningController = function($scope, $http, $q, serverUrl, $interval, $sf_xy
         container.appendChild(dataGui.domElement);
     }
 
-    graphOperations = $drawMesh($scope, serverUrl, 'induction_mesh', true);
+    graphOperations = $drawMesh($scope, 'induction_mesh', true);
     createControls();
 }

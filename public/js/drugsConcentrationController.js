@@ -1,29 +1,9 @@
-var drugsConcentrationController = function($scope, $solutions, $cookieStore, $cookies) {
-
+var drugsConcentrationController = function($scope, $solutions, webstore) {
     $scope.onLoad = function() {
-        var drug1_solution = $cookies["drug1_solution"];
-        var drug2_solution = $cookies["drug2_solution"];
-        var drug1_solution_type = $cookies["drug1_solution_type"];
-        var drug2_solution_type = $cookies["drug2_solution_type"];
-
-        var solution1, solution2;
-
-        if (angular.isDefined(drug1_solution)) {
-            solution1 = $cookieStore.get("drug1_solution");
-        }
-
-        if (angular.isDefined(drug2_solution)) {
-            solution2 = $cookieStore.get("drug2_solution");
-        }
-
-        var solution_type1, solution_type2;
-        if (angular.isDefined(drug1_solution_type)) {
-            solution_type1 = $cookieStore.get("drug1_solution_type");
-        }
-
-       if (angular.isDefined(drug2_solution_type)) {
-            solution_type2 = $cookieStore.get("drug2_solution_type");
-        }
+        var solution1 = webstore.get("drug1_solution");
+        var solution2 = webstore.get("drug2_solution");
+        var solution_type1 = webstore.get("drug1_solution_type");
+        var solution_type2 = webstore.get("drug2_solution_type");
 
         $solutions.query(function (data) {
             $scope.solutions = data;
@@ -37,10 +17,13 @@ var drugsConcentrationController = function($scope, $solutions, $cookieStore, $c
     }
 
     $scope.onChange = function() {
-        $cookieStore.put("drug1_solution", $scope.drugs[0].solution);
-        $cookieStore.put("drug2_solution", $scope.drugs[1].solution);
-        $cookieStore.put("drug1_solution_type", $scope.drugs[0].solution_type);
-        $cookieStore.put("drug2_solution_type", $scope.drugs[0].solution_type);
+        var drug_1 =  $scope.drugs[0];
+        var drug_2 =  $scope.drugs[1];
+
+        webstore.update("drug1_solution", drug_1.solution);
+        webstore.update("drug2_solution", drug_2.solution);
+        webstore.update("drug1_solution_type", drug_1.solution_type);
+        webstore.update("drug2_solution_type", drug_2.solution_type);
     }
 
     $scope.onLoad();

@@ -18,6 +18,7 @@ App.config(function($translateProvider) {
     patient_weight: 'Peso (Kg)',
     patient_genre: 'Género',
     patient_age: 'Edad',
+
   });
 
   $translateProvider.preferredLanguage('es');

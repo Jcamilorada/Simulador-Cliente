@@ -1,5 +1,5 @@
-// Rest Resources
-App.factory("parameters", function($resource, serverUrl) {
+// Rest Services resource declaration
+App.factory("$parameters", function($resource, serverUrl) {
   return $resource(serverUrl + "/parameters/:id");
 });
 

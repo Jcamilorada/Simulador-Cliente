@@ -1,27 +1,10 @@
-var pnrIndController = function($scope, $drawMesh, round_2d, serverUrl, $sf_y, $sf_x, $sf_xy, $cookieStore, $cookies)
+var pnrIndController = function($scope, $drawMesh, $sf_y, $sf_x, $sf_xy, webstore, utils)
 {
-    // when update cookie value
-    onChange = function(parameter, value) {
-        $cookieStore.put(parameter, value);
-    };
-
-    // get cookie value
-    getCookie = function(name)
-    {
-        var cookie_value;
-        if (angular.isDefined($cookies[name]))
-        {
-            cookie_value = $cookieStore.get(name);
-        }
-
-        return cookie_value;
-    }
-
     // factor value for concentrations.
     var factor = 10;
     var graphOperations;
 
-    // cookies names
+    // stores variables names
     var ind_c = "induction_method";
     var pnr_c = "pnr_ind"
     var prop_c = "prop_ind";
@@ -35,18 +18,18 @@ var pnrIndController = function($scope, $drawMesh, round_2d, serverUrl, $sf_y, $
         zController = gui.add($scope, 'PNR', 0, 100).name('PNR %').listen();
         xController = gui.add($scope, 'Remifentanilo', 1, 10).name('Remifentanilo ng/ml').listen();
         yController = gui.add($scope, 'Propofol', 1, 10).name('Propofol mcg/ml').listen();
-        timeController = gui.add($scope, 'Tiempo').name('Tiempo (minutos) ').listen();
+        timeController = gui.add($scope, 'Tiempo', 0, 240).name('Tiempo (minutos) ').listen();
 
         // Update Propofol value if user update remi
         xController.onChange(function(value) {
-            onChange(remi_c, value);
+            webstore.update(remi_c, value);
 
-            $sf_y.get({ x: round_2d(value),  pnr: round_2d($scope.PNR/100)}, function (data) {
+            $sf_y.get({ x: utils.round_2d(value),  pnr: utils.round_2d($scope.PNR/100)}, function (data) {
                 if (angular.isDefined(data.value)) {
-                    graphOperations.changeObjectX(round_2d(value) * factor);
-                    graphOperations.changeObjectY(round_2d(data.value) * factor);
+                    graphOperations.changeObjectX(utils.round_2d(value) * factor);
+                    graphOperations.changeObjectY(utils.round_2d(data.value) * factor);
 
-                    $scope.Propofol = round_2d(data.value)
+                    $scope.Propofol = utils.round_2d(data.value)
                     onChange(prop_c, $scope.Propofol);
                 }
             });
@@ -54,41 +37,41 @@ var pnrIndController = function($scope, $drawMesh, round_2d, serverUrl, $sf_y, $
 
         // Update remi value if user update propofol
         yController.onChange(function(value) {
-            onChange(prop_c, value);
+            webstore.update(prop_c, value);
 
-            $sf_x.get({ y: round_2d(value),  pnr: round_2d($scope.PNR/100)}, function (data) {
+            $sf_x.get({ y: utils.round_2d(value),  pnr: utils.round_2d($scope.PNR/100)}, function (data) {
                 if (angular.isDefined(data.value)) {
-                    graphOperations.changeObjectX(round_2d(data.value) * factor);
-                    graphOperations.changeObjectY(round_2d(value) * factor);
+                    graphOperations.changeObjectX(utils.round_2d(data.value) * factor);
+                    graphOperations.changeObjectY(utils.round_2d(value) * factor);
 
-                    $scope.Remifentanilo = round_2d(data.value)
-                    onChange(remi_c, $scope.Remifentanilo);
+                    $scope.Remifentanilo = utils.round_2d(data.value)
+                    webstore.update(remi_c, $scope.Remifentanilo);
                 }
             });
         });
 
         // Update remi and propofol if user update PNR
         zController.onChange(function(value) {
-            onChange(pnr_c, value);
+            webstore.update(pnr_c, value);
 
-           $sf_xy.get({pnr: round_2d($scope.PNR/100) }, function (data) {
+           $sf_xy.get({pnr: utils.round_2d($scope.PNR/100) }, function (data) {
                 if (angular.isDefined(data.x) && angular.isDefined(data.y)) {
-                    graphOperations.changeObjectX(round_2d(data.x) * factor);
-                    graphOperations.changeObjectY(round_2d(data.y) * factor);
-                    graphOperations.changeObjectZ(round_2d(value));
+                    graphOperations.changeObjectX(utils.round_2d(data.x) * factor);
+                    graphOperations.changeObjectY(utils.round_2d(data.y) * factor);
+                    graphOperations.changeObjectZ(utils.round_2d(value));
 
-                    $scope.Remifentanilo = round_2d(data.x)
-                    $scope.Propofol = round_2d(data.y)
+                    $scope.Remifentanilo = utils.round_2d(data.x)
+                    $scope.Propofol = utils.round_2d(data.y)
 
-                    onChange(prop_c, $scope.Propofol);
-                    onChange(remi_c, $scope.Remifentanilo);
+                    webstore.update(prop_c, $scope.Propofol);
+                    webstore.update(remi_c, $scope.Remifentanilo);
                 }
             });
         });
 
-        // Update time cookie
+        // Update stores value
         timeController.onChange(function(value) {
-            onChange('time', value);
+            webstore.update('time_ind', value);
         });
     }
 
@@ -109,11 +92,11 @@ var pnrIndController = function($scope, $drawMesh, round_2d, serverUrl, $sf_y, $
         }
         else
         {
-            $sf_xy.get({pnr: round_2d($scope.PNR/100) }, function (data) {
+            $sf_xy.get({pnr: utils.round_2d($scope.PNR/100) }, function (data) {
                 if (angular.isDefined(data.x) && angular.isDefined(data.y)) {
 
-                    $scope.Propofol = round_2d(data.y)
-                    $scope.Remifentanilo = round_2d(data.x)
+                    $scope.Propofol = utils.round_2d(data.y)
+                    $scope.Remifentanilo = utils.round_2d(data.x)
 
                     initGraph($scope.PNR, $scope.Remifentanilo, $scope.Propofol);
                     createControls();
@@ -131,18 +114,19 @@ var pnrIndController = function($scope, $drawMesh, round_2d, serverUrl, $sf_y, $
     }
 
     $scope.$on('$locationChangeStart', function(event, next, current) {
-        onChange(prop_c, round_2d($scope.Propofol));
-        onChange(remi_c, round_2d($scope.Remifentanilo));
+        webstore.update(prop_c, utils.round_2d($scope.Propofol));
+        webstore.update(remi_c, utils.round_2d($scope.Remifentanilo));
+        webstore.update(pnr_c, utils.round_2d($scope.PNR));
         gui.destroy();
     });
 
-    var remi = getCookie(remi_c);
-    var prop = getCookie(prop_c);
-    var pnr_ind = getCookie(pnr_c);
+    var remi = webstore.get(remi_c);
+    var prop = webstore.get(prop_c);
+    var pnr_ind = webstore.get(pnr_c);
 
-    var pnr = angular.isDefined(pnr_ind) ? pnr_ind :getCookie(ind_c).pnr;
-    var time = getCookie(time_c);
+    var pnr = angular.isDefined(pnr_ind) ? pnr_ind :webstore.get(ind_c).pnr;
+    var time = webstore.get(time_c);
 
-    graphOperations = $drawMesh($scope, serverUrl, 'induction_mesh');
+    graphOperations = $drawMesh($scope, 'induction_mesh');
     initValues(pnr, remi, prop, time);
 }

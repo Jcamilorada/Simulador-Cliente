@@ -1,8 +1,6 @@
 App.constant('serverUrl', 'http://localhost:8092');
-App.constant('round_2d', function(num) {
-    return Math.round(num * 100) / 100;
-});
-App.constant('$drawMesh', function($scope, serverUrl, div_id, isMainGraphic, round_2d) {
+
+App.constant('$drawMesh', function($scope, div_id, isMainGraphic, round_2d, serverUrl) {
     var scene, camera, sphere, sphere2;
     var mesh, light, div_element;
 
@@ -113,9 +111,6 @@ App.constant('$drawMesh', function($scope, serverUrl, div_id, isMainGraphic, rou
              scene.add(sphere2);
         }
     }
-
-
-
 
     // Main display function.
     function animate() {

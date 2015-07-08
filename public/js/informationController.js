@@ -1,15 +1,11 @@
-var informationController = function($scope, $cookieStore, $cookies){
+var informationController = function($scope, webstore){
 
     $scope.onLoad = function() {
-        var patient = $cookies["patient"];
-
-        if (angular.isDefined(patient)) {
-            $scope.patient = $cookieStore.get("patient");
-        }
+        $scope.patient = webstore.get("patient");
     }
 
     $scope.onUpdate = function(){
-        $cookieStore.put("patient", $scope.patient);
+        webstore.update("patient", $scope.patient);
     }
 
     $scope.onLoad();

@@ -1,3 +1,3 @@
-var homeController = function($scope, $http, serverUrl)
+var homeController = function()
 {
 }

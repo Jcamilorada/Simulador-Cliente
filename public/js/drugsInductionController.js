@@ -1,15 +1,7 @@
-var drugsInductionController = function($scope, $drugs, $cookieStore, $cookies){
+var drugsInductionController = function($scope, $drugs, webstore){
     $scope.onLoad = function() {
-        var induction_drug1 = $cookies["induction_drug1"];
-        var induction_drug2 = $cookies["induction_drug2"];
-
-        if (angular.isDefined(induction_drug1)) {
-            $scope.induction_drug1 = $cookieStore.get("induction_drug1");
-        }
-
-        if (angular.isDefined(induction_drug2)) {
-            $scope.induction_drug2 = $cookieStore.get("induction_drug2");
-        }
+        $scope.induction_drug1 = webstore.get("induction_drug1");
+        $scope.induction_drug2 = webstore.get("induction_drug2");
 
         $drugs.query({ type:1 }, function (data) {
             var drugs_type_1 = [];
@@ -44,8 +36,8 @@ var drugsInductionController = function($scope, $drugs, $cookieStore, $cookies){
     }
 
     $scope.onChange = function() {
-        $cookieStore.put("induction_drug1", $scope.induction_drug1);
-        $cookieStore.put("induction_drug2", $scope.induction_drug2);
+        webstore.update("induction_drug1", $scope.induction_drug1);
+        webstore.update("induction_drug2", $scope.induction_drug2);
     }
 
     $scope.onLoad();
