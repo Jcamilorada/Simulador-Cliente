@@ -12,6 +12,17 @@ App.service('utils', function () {
     }
 
     /**
+     * Retrieves the integer part of the given number.
+     *
+     * @param num numeric integer value.
+     *
+     * @return integer aproximation of the given number.
+     */
+    this.round = function(num) {
+        return Math.round(num);
+    }
+
+    /**
      * Retrieves an array contructed extracting given property name from given
      * array of objects.
      *
@@ -30,5 +41,18 @@ App.service('utils', function () {
         }
 
         return dataArray;
+    }
+
+    /**
+     * Get the last element of the given array.
+     *
+     * @param  {Array} array input array to get the last element.
+     *
+     * @return {Object} the last element of the given array.
+     */
+    this.lastArrayElement = function(array) {
+        var length = array.length;
+
+        return array[length -1];
     }
 });

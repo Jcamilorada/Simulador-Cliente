@@ -1,4 +1,4 @@
-var pnrProcController = function($scope, $drawMesh, $sf_y, $sf_x, $sf_xy, webstore, utils)
+var pnrProcController = function($scope, $sf_y, $sf_x, $sf_xy, graph, webstore, utils)
 {
     // factor value for concentrations.
     var factor = 10;
@@ -30,7 +30,7 @@ var pnrProcController = function($scope, $drawMesh, $sf_y, $sf_x, $sf_xy, websto
                     graphOperations.changeObjectY(utils.round_2d(data.value) * factor);
 
                     $scope.Propofol = utils.round_2d(data.value)
-                    onChange(prop_c, $scope.Propofol);
+                    webstore.update(prop_c, $scope.Propofol);
                 }
             });
         });
@@ -45,7 +45,7 @@ var pnrProcController = function($scope, $drawMesh, $sf_y, $sf_x, $sf_xy, websto
                     graphOperations.changeObjectY(utils.round_2d(value) * factor);
 
                     $scope.Remifentanilo = utils.round_2d(data.value)
-                    onChange(remi_c, $scope.Remifentanilo);
+                    webstore.update(remi_c, $scope.Remifentanilo);
                 }
             });
         });
@@ -127,6 +127,6 @@ var pnrProcController = function($scope, $drawMesh, $sf_y, $sf_x, $sf_xy, websto
     var pnr = angular.isDefined(pnr_proc) ? pnr_proc :webstore.get(prc_c).pnr;
     var time = webstore.get(time_c);
 
-    graphOperations = $drawMesh($scope, 'induction_mesh');
+    graphOperations = graph.draw_simple_mesh($scope, 'induction_mesh');
     initValues(pnr, remi, prop, time);
 }
