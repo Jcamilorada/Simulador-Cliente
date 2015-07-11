@@ -1,5 +1,14 @@
 App.service('utils', function () {
 
+    this.getDateString = function(total_seconds) {
+        var duration = moment.duration(total_seconds, 'seconds');
+        var hours = ("0"+ duration.hours()).slice(-2);
+        var minutes = ("0"+ duration.minutes()).slice(-2);
+        var seconds = ("0"+ duration.seconds()).slice(-2);
+
+        return hours + ":" + minutes + ":"  + seconds;
+    }
+
     /**
      * Retrieves the 2 decimal aporximation of the given number.
      *

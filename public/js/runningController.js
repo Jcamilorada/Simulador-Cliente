@@ -8,9 +8,14 @@ var runningController = function($scope, $interval, graph, webstore, pump, utils
     var intervalPromise;
     var patient = webstore.get('patient');
 
+    $scope.$watch('tiempo_actual', function() {
+        $scope.tiempo_actual_2 = utils.getDateString($scope.tiempo_actual);
+     });
+
     play_simulation = function()
     {
-        intervalPromise = $interval(simulate, 1000);
+        var simulation_speed = 100 / $scope.velocidad_sim;
+        intervalPromise = $interval(simulate, simulation_speed);
         simulation_running = true;
     }
 
@@ -149,6 +154,7 @@ var runningController = function($scope, $interval, graph, webstore, pump, utils
         $scope.remi_actual = "0.0";
         $scope.prop_actual = "0.0";
         $scope.tiempo_actual = 0;
+        $scope.tiempo_actual_2 = "00:00:00";
 
         // Dynamic Information
         $scope.PNR = 50;
@@ -164,11 +170,11 @@ var runningController = function($scope, $interval, graph, webstore, pump, utils
         var pnrController = pnrFolder.add($scope, 'PNR', 0, 100).name('PNR %').listen();
         var remiController = pnrFolder.add($scope, 'Remifentanilo', 1, 10).name('Remifentanilo ng/ml').listen();
         var propController = pnrFolder.add($scope, 'Propofol', 1, 10).name('Propofol mcg/ml').listen();
-        var tiempoController = pnrFolder.add($scope, 'tiempo').name('Tiempo (minutos)');
+        var tiempoController = pnrFolder.add($scope, 'tiempo', 0, 240).name('Tiempo (minutos)');
         pnrFolder.add($scope, 'actualizar').name('Actualizar');
 
         var confFolder = updateGui.addFolder('Configuracion');
-        var velController = confFolder.add($scope, 'velocidad_sim', [ '1x', '2x', '3x' ] ).name('Velocidad de simulacion');
+        var velController = confFolder.add($scope, 'velocidad_sim', [1, 2, 3, 5, 10 ] ).name('Velocidad de simulacion');
         var stop_start = confFolder.add($scope, 'stop_start').name('Iniciar/Detener Simulacion');
 
         // Readonly Controls
@@ -180,7 +186,9 @@ var runningController = function($scope, $interval, graph, webstore, pump, utils
         var pnrActualController = dataGui.add($scope, 'pnr_actual').name('PNR actual').listen();
         var remiActualController = dataGui.add($scope, 'remi_actual').name('Remifentanilo ng/ml').listen();
         var popActualController = dataGui.add($scope, 'prop_actual').name('Propofol mcg/ml').listen();
-        var tiempoActController = dataGui.add($scope, 'tiempo_actual').name('Tiempo actual').listen();
+        var tiempoActController = dataGui.add($scope, 'tiempo_actual').name('Tiempo actual (seg)').listen();
+        var tiempoAct2Controller = dataGui.add($scope, 'tiempo_actual_2').name('Tiempo actual').listen();
+
         $(dataGui.domElement).find("input").prop('disabled', true);
 
         var container = document.getElementById('induction_mesh');
