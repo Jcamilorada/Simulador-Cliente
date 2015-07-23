@@ -47,14 +47,20 @@ App.service('pump', function (utils, serverUrl, $q, $http) {
     }
 
     refresh_request = function(patient, infusion, simulation_data, model) {
-        var c = utils.lastArrayElement(simulation_data.plasmaConcentrationsData);
-        var p = utils.lastArrayElement(simulation_data.siteConcentrationsData);
+        var p = utils.lastArrayElement(simulation_data.plasmaConcentrationsData);
+        var c = utils.lastArrayElement(simulation_data.siteConcentrationsData);
+
+        var new_infusion = {
+            startTime: 0,
+            endTime: infusion.endTime - infusion.startTime,
+            infusion: infusion.infusion
+        };
 
         var request = {
             model: model,
             deltaTime : 240,
             patient: patient,
-            pumpInfusion : infusion,
+            pumpInfusion : [new_infusion],
             componentValuesDTO : {c1: c.c1, c2: c.c2, c3: c.c3, c4: c.c4},
             plasmaComponentValuesDTO: {p1: p.p1, p2: p.p2, p3: p.p3},
             drugConcentration: 10
@@ -63,6 +69,25 @@ App.service('pump', function (utils, serverUrl, $q, $http) {
         return request;
     }
 
+    this.infused_volume = function(current, current_infusion) {
+        return Number(current) + Number(current_infusion)/3600;
+    }
+
+    this.current_infusion = function(current_time, infusion_list)
+    {
+        var arrayLength = infusion_list.length;
+        for (var i = 0; i < arrayLength; i++) {
+            var infusion = infusion_list[i];
+
+            if (current_time <= infusion.endTime && current_time >= infusion.time) {
+
+                return {
+                    value:infusion.infusionValue,
+                    a_value:infusion.alternativeInfusionValue
+                  };
+            }
+        }
+    }
 
     this.remi_request = function(patient, ind_time, proc_time, ind_inf, proc_inf) {
         return inf_request(patient, ind_time, proc_time, ind_inf, proc_inf, 0);
@@ -81,11 +106,11 @@ App.service('pump', function (utils, serverUrl, $q, $http) {
     }
 
     this.remi_refresh_request = function(patient, infusion, simulation_data) {
-        refresh_request(patient, infusion, simulation_data, 0);
+        return refresh_request(patient, infusion, simulation_data, 0);
     }
 
     this.prop_refresh_request = function(patient, infusion, simulation_data) {
-        refresh_request(patient, infusion, simulation_data, 1);
+        return refresh_request(patient, infusion, simulation_data, 1);
     }
 
     this.get_simulation_information = function(remi_request_py, prop_request_py) {
