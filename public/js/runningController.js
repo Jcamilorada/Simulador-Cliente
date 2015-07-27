@@ -108,8 +108,8 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
             currentRemi = $scope.remi_cocentrations[currentDataIndex];
             currentProp = $scope.prop_cocentrations[currentDataIndex];
 
-            graphOperations.changeObjectSX(utils.round_2d(currentProp) * factor);
-            graphOperations.changeObjectSY(utils.round_2d(currentRemi) * factor);
+            graphOperations.changeObjectSY(utils.round_2d(currentProp) * factor);
+            graphOperations.changeObjectSX(utils.round_2d(currentRemi) * factor);
             graphOperations.changeObjectSZ(utils.round_2d(currentPNR) * pnr_factor);
 
             updateControls(
@@ -144,16 +144,16 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
 
         var remi_update_py = pump.remi_update_request(
             patient,
-            $scope.tiempo,
-            currentTime,
-            $scope.remi,
+            $scope.tiempo * 60,
+            currentDataIndex,
+            $scope.Remifentanilo,
             $scope.remi_simulation_data);
 
-        var prop_update_py = pump.remi_update_request(
+        var prop_update_py = pump.prop_update_request(
                 patient,
-                $scope.tiempo,
-                currentTime,
-                $scope.prop,
+                $scope.tiempo * 60,
+                currentDataIndex,
+                $scope.Propofol,
                 $scope.prop_simulation_data);
 
         update_simulation_data(remi_update_py, prop_update_py, true);
@@ -238,6 +238,8 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
                 if (angular.isDefined(data.value)) {
                     graphOperations.changeObjectX(utils.round_2d(value) * factor);
                     graphOperations.changeObjectY(utils.round_2d(data.value) * factor);
+
+                    $scope.Propofol = utils.round_2d(data.value);
                 }
             });
         });
@@ -248,6 +250,8 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
                 if (angular.isDefined(data.value)) {
                     graphOperations.changeObjectX(utils.round_2d(data.value) * factor);
                     graphOperations.changeObjectY(utils.round_2d(value) * factor);
+
+                    $scope.Remifentanilo = utils.round_2d(data.value);
                 }
             });
         });
@@ -259,6 +263,9 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
                     graphOperations.changeObjectX(utils.round_2d(data.x) * factor);
                     graphOperations.changeObjectY(utils.round_2d(data.y) * factor);
                     graphOperations.changeObjectZ(utils.round_2d(value));
+
+                    $scope.Remifentanilo = utils.round_2d(data.x);
+                    $scope.Propofol = utils.round_2d(data.y);
                 }
             });
         });

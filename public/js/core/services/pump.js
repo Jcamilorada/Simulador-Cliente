@@ -26,18 +26,22 @@ App.service('pump', function (utils, serverUrl, $q, $http) {
         return request;
     }
 
-    update_request = function(patient, time, current_time, remi_inf, simulation_data, model) {
-        var c = simulation_data.plasmaConcentrationsData[current_time];
-        var p = simulation_data.siteConcentrationsData[current_time];
+    update_request = function(patient, ind_time, current_time, infusion, simulation_data, model) {
+        var p = simulation_data.plasmaConcentrationsData[current_time];
+        var c = simulation_data.siteConcentrationsData[current_time];
 
-        var infusion =[
-            {startTime:0, endTime:utils.round_2d(ind_time), infusion:ind_inf }];
+        var infusions =[
+            {
+                startTime : 0,
+                endTime : utils.round_2d(ind_time),
+                infusion : infusion
+            }];
 
         var request = {
             model: model,
             deltaTime : 240,
             patient: patient,
-            pumpInfusion : infusion,
+            pumpInfusion : infusions,
             componentValuesDTO : {c1: c.c1, c2: c.c2, c3: c.c3, c4: c.c4},
             plasmaComponentValuesDTO: {p1: p.p1, p2: p.p2, p3: p.p3},
             drugConcentration: 10
@@ -98,11 +102,11 @@ App.service('pump', function (utils, serverUrl, $q, $http) {
     }
 
     this.remi_update_request = function(patient, time, current_time, remi_inf, simulation_data) {
-        update_request(patient, time, current_time, remi_inf, 0);
+        return update_request(patient, time, current_time, remi_inf, simulation_data, 0);
     }
 
-    this.prop_update_request = function(patient, time, current_time, remi_inf, simulation_data) {
-        update_request(patient, time, current_time, remi_inf, 1);
+    this.prop_update_request = function(patient, time, current_time, prop_inf, simulation_data) {
+        return update_request(patient, time, current_time, prop_inf, simulation_data,  1);
     }
 
     this.remi_refresh_request = function(patient, infusion, simulation_data) {
