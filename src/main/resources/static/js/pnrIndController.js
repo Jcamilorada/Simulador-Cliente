@@ -79,8 +79,7 @@ var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, graph, webstore, u
     initValues = function(PNR, remi, prop, time)
     {
         $scope.PNR = PNR;
-
-        $scope.Tiempo = angular.isDefined(time) ? time : 120;
+        $scope.Tiempo = time;
 
         if (angular.isDefined(remi) && angular.isDefined(prop))
         {
@@ -123,9 +122,11 @@ var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, graph, webstore, u
     var remi = webstore.get(remi_c);
     var prop = webstore.get(prop_c);
     var pnr_ind = webstore.get(pnr_c);
+    var time_ind =  webstore.get(time_c);
 
-    var pnr = angular.isDefined(pnr_ind) ? pnr_ind :webstore.get(ind_c).pnr;
-    var time = webstore.get(time_c);
+    var pnr = angular.isDefined(pnr_ind) ? pnr_ind : webstore.get(ind_c).pnr;
+    var time = angular.isDefined(time_ind) ? time_ind : 120;
+    webstore.update(time_c, time);
 
     graphOperations = graph.draw_simple_mesh($scope, 'induction_mesh');
     initValues(pnr, remi, prop, time);

@@ -17,14 +17,15 @@ p{
 #link-list li {
     font-size: 11px;
 }
-#link-list {
-    //position: absolute;
-    //z-index = 10;
-}
 
 .main-content {
+    height: 580px;
+}
+
+.main-content-graph {
     height: 1580px;
 }
+
 
 th {
     text-align: center;

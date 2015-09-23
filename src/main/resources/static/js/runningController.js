@@ -206,7 +206,7 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
         $scope.velocidad_sim = 1;
 
         // Dynamic Controls
-        updateGui = new dat.GUI({ width: 500 });
+        updateGui = new dat.GUI({autoPlace: false, width: 500 });
 
         var pnrFolder = updateGui.addFolder('Actualizar Pnr');
         var pnrController = pnrFolder.add($scope, 'PNR', 0, 100).name('PNR %').listen();
@@ -217,6 +217,12 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
 
         var confFolder = updateGui.addFolder('Configuracion');
         var velController = confFolder.add($scope, 'velocidad_sim', [1, 2, 5, 10, 30 ] ).name('Velocidad de simulacion');
+
+        velController.onChange(function(value){
+            stop_simulation();
+            play_simulation();
+        });
+
         var stop_start = confFolder.add($scope, 'stop_start').name('Iniciar/Detener Simulacion');
 
         // Readonly Controls
@@ -247,6 +253,11 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
         dataGui.domElement.style.left = '10px';
         dataGui.domElement.style.top = '0px';
         container.appendChild(dataGui.domElement);
+
+        updateGui.domElement.style.position = 'absolute';
+        updateGui.domElement.style.right = '10px';
+        updateGui.domElement.style.top = '0px';
+        container.appendChild(updateGui.domElement);
 
         // Update Propofol value if user update remi
         remiController.onChange(function(value) {

@@ -123,9 +123,11 @@ var pnrProcController = function($scope, $sf_y, $sf_x, $sf_xy, graph, webstore, 
     var remi = webstore.get(remi_c);
     var prop = webstore.get(prop_c);
     var pnr_proc = webstore.get(pnr_c);
+    var time_proc =  webstore.get(time_c);
 
     var pnr = angular.isDefined(pnr_proc) ? pnr_proc :webstore.get(prc_c).pnr;
-    var time = webstore.get(time_c);
+    var time = angular.isDefined(time_proc) ? time_proc : 120;
+    webstore.update(time_c, time);
 
     graphOperations = graph.draw_simple_mesh($scope, 'induction_mesh');
     initValues(pnr, remi, prop, time);
