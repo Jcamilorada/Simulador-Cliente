@@ -77,7 +77,7 @@ GRAP.getCamera = function(width, height) {
         10000           // Far
     );
     camera.position.set(-103, -119, 140);
-    camera.up = new THREE.Vector3(0,0,1);
+    camera.up = new THREE.Vector3(0, 0, 1);
 
     return camera;
 }

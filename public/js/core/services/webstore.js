@@ -15,7 +15,7 @@ App.service('webstore', function ($cookieStore, $cookies) {
     this.get = function(name, default_val) {
         var cookie_value = default_val;
 
-        if (angular.isDefined($cookies[name]))
+        if (angular.isDefined($cookies[name]) && $cookies[name] !== "undefined")
         {
             cookie_value = $cookieStore.get(name);
         }

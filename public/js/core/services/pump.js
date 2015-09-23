@@ -93,6 +93,18 @@ App.service('pump', function (utils, serverUrl, $q, $http) {
         }
     }
 
+    this.current_infusion_time = function(current_time, infusion_list)
+    {
+        var arrayLength = infusion_list.length;
+        for (var i = 0; i < arrayLength; i++) {
+            var infusion = infusion_list[i];
+
+            if (current_time <= infusion.endTime && current_time >= infusion.time) {
+                return infusion.endTime - infusion.time;
+            }
+        }
+    }
+    
     this.remi_request = function(patient, ind_time, proc_time, ind_inf, proc_inf) {
         return inf_request(patient, ind_time, proc_time, ind_inf, proc_inf, 0);
     }

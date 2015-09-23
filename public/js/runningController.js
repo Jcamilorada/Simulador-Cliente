@@ -26,6 +26,7 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
     }
 
     updateControls = function(
+      infusion_time,
       currentTime,
       currentPNR,
       currentRemi,
@@ -47,6 +48,9 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
           currenRemiInfusion.value + "ml/h -" + currenRemiInfusion.a_value + " ug/kg/h";
         $scope.velocidad_infunsion_p =
             currenPropInfusion.value + "ml/h -" + currenPropInfusion.a_value + " ug/kg/h";
+        
+        $scope.volumen_a_infu_r = utils.round_2d(currenRemiInfusion.value * (infusion_time/60) / 60).toString()  + " ml";
+        $scope.volumen_a_infu_p = utils.round_2d(currenPropInfusion.value * (infusion_time/60) / 60 ).toString() + " ml";
     }
 
     update_simulation_data = function(remi_request_py, prop_request_py, resume_simulation)
@@ -103,6 +107,8 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
               currentDataIndex, $scope.prop_simulation_data.infusionList);
             var currenRemiInfusion = pump.current_infusion(
                 currentDataIndex, $scope.remi_simulation_data.infusionList);
+            var infusion_time = pump.current_infusion_time(
+                currentDataIndex, $scope.remi_simulation_data.infusionList);
 
             currentPNR = $scope.pnr_simulation_data[currentDataIndex];
             currentRemi = $scope.remi_cocentrations[currentDataIndex];
@@ -113,6 +119,7 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
             graphOperations.changeObjectSZ(utils.round_2d(currentPNR) * pnr_factor);
 
             updateControls(
+              infusion_time,
               currentTime,
               currentPNR,
               currentRemi,
@@ -181,7 +188,8 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
         $scope.volumen_infu_r  = "0";
         $scope.volumen_infu_p  = "0";
 
-
+        $scope.volumen_a_infu_r = "";
+        $scope.volumen_a_infu_p = "";
 
         $scope.tiempo_alcanzar = 0;
         $scope.pnr_actual = "0%";
@@ -213,16 +221,24 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
 
         // Readonly Controls
         dataGui = new dat.GUI({ autoPlace: false, width: 500});
-        var velInfusionRemiController = dataGui.add($scope, 'velocidad_infunsion_r').name('Velocidad Infusion (Remifentanilo)').listen();
-        var velInfusionPropController = dataGui.add($scope, 'velocidad_infunsion_p').name('Velocidad Infusion (Propofol)').listen();
-        var volumenInfundidoR = dataGui.add($scope, 'volumen_infu_r').name('V. Infundido ml (Remifentanilo)').listen();
-        var volumenInfundidoP = dataGui.add($scope, 'volumen_infu_p').name('V. Infundido ml (Propofol)').listen();
+        var remiFolder = dataGui.addFolder('Remifentanilo');
+        var propFolder = dataGui.addFolder('Propofol');
 
-        var pnrActualController = dataGui.add($scope, 'pnr_actual').name('PNR actual').listen();
-        var remiActualController = dataGui.add($scope, 'remi_actual').name('Remifentanilo ng/ml').listen();
-        var popActualController = dataGui.add($scope, 'prop_actual').name('Propofol mcg/ml').listen();
-        var tiempoActController = dataGui.add($scope, 'tiempo_actual').name('Tiempo actual (seg)').listen();
-        var tiempoAct2Controller = dataGui.add($scope, 'tiempo_actual_2').name('Tiempo actual').listen();
+        var velInfusionRemiController = remiFolder.add($scope, 'velocidad_infunsion_r').name('Velocidad Infusion').listen();
+        var velInfusionPropController = propFolder.add($scope, 'velocidad_infunsion_p').name('Velocidad Infusion').listen();
+
+        var volumenInfundidoR = remiFolder.add($scope, 'volumen_infu_r').name('V. Infundido ml').listen();
+        var volumenInfundidoP = propFolder.add($scope, 'volumen_infu_p').name('V. Infundido ml').listen();
+
+        var volumenInfundirR = remiFolder.add($scope, 'volumen_a_infu_r').name('V. a Infundir ml').listen();
+        var volumenInfundirP = propFolder.add($scope, 'volumen_a_infu_p').name('V. a Infundir ml').listen();
+
+        var actualFolder = dataGui.addFolder('Simulacion');
+        var pnrActualController = actualFolder.add($scope, 'pnr_actual').name('PNR actual').listen();
+        var remiActualController = actualFolder.add($scope, 'remi_actual').name('Remifentanilo ng/ml').listen();
+        var popActualController = actualFolder.add($scope, 'prop_actual').name('Propofol mcg/ml').listen();
+        var tiempoActController = actualFolder.add($scope, 'tiempo_actual').name('Tiempo actual (seg)').listen();
+        var tiempoAct2Controller = actualFolder.add($scope, 'tiempo_actual_2').name('Tiempo actual').listen();
 
         $(dataGui.domElement).find("input").prop('disabled', true);
 
