@@ -2,6 +2,7 @@
     <name>simulator-cliente</name>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>simulador-tacan-cliente</artifactId>
+    <packaging>jar</packaging>
     <groupId>web-applications</groupId>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -15,11 +16,14 @@
         </dependency>
     </dependencies>
 
+
+
     <properties>
         <start-class>simulatorui.configuration.ClientApplication</start-class>
     </properties>
 
     <build>
+        <resources></resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
