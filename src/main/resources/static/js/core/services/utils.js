@@ -21,6 +21,17 @@ App.service('utils', function () {
     }
 
     /**
+     * Retrieves the 2 decimal aporximation of the given number.
+     *
+     * @param  {number} num input number.
+     *
+     * @return {number} number using 2 decimal points approximation.
+     */
+    this.round_3d = function(num) {
+        return Math.round(num * 1000) / 1000;
+    }
+
+    /**
      * Retrieves the integer part of the given number.
      *
      * @param num numeric integer value.

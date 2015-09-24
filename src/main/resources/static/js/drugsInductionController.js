@@ -10,9 +10,9 @@ var drugsInductionController = function($scope, $drugs, webstore){
             {
                 for (concentration in data[drug].concentrations) {
                     drugs_type_1.push({
-                        name: data[drug].name + '-' + data[drug].concentrations[concentration],
+                        name: data[drug].name + ' ' + data[drug].concentrations[concentration] + ' mcg',
                         id: data[drug].id,
-                        value: concentration
+                        value: data[drug].concentrations[concentration]
                         });
                 }
             }
@@ -26,9 +26,10 @@ var drugsInductionController = function($scope, $drugs, webstore){
             {
                 for (concentration in data[drug].concentrations) {
                     drugs_type_2.push({
-                     name: data[drug].name + '-' + data[drug].concentrations[concentration],
+                     name: data[drug].name + ' ' + data[drug].concentrations[concentration] + ' mg',
                      id: data[drug].id,
-                     value: concentration});
+                     value: data[drug].concentrations[concentration]
+                     });
                 }
             }
             $scope.type2_drugs = drugs_type_2;
