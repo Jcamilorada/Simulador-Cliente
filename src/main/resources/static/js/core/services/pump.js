@@ -132,16 +132,26 @@ App.service('pump', function (utils, serverUrl, $q, $http) {
     this.get_simulation_information = function(remi_request_py, prop_request_py) {
         var deferred = $q.defer();
 
+        var remiErrors = false;
         var remi_simulation_data, prop_simulation_data;
-        var remi_request = $http.put(serverUrl + INF_URL, remi_request_py).success(function (data) {
-            remi_simulation_data = data;
+        var remi_request = $http.put(serverUrl + INF_URL, remi_request_py).then(function (response) {
+            remiErrors = response.data.errorCode === 1;
+            remi_simulation_data = response.data;
         });
 
-        var prop_request = $http.put(serverUrl + INF_URL, prop_request_py).success(function (data) {
-            prop_simulation_data = data;
+        var propErrors = false;
+        var prop_request = $http.put(serverUrl + INF_URL, prop_request_py).then(function (response) {
+            propErrors = response.data.errorCode === 1;
+            prop_simulation_data = response.data;
         });
 
         $q.all([remi_request, prop_request]).then(function() {
+            if (propErrors || remiErrors)
+            {
+                alert('no es posible');
+                return;
+            }
+
             var remi_cocentrations = utils.extractArray(remi_simulation_data.siteConcentrationsData, 'total');
             var prop_cocentrations = utils.extractArray(prop_simulation_data.siteConcentrationsData, 'total');
 
