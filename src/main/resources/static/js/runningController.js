@@ -3,6 +3,7 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
     /* Global global variables */
     var factor = 10; var pnr_factor = 100;
     var currentTime = currentPNR = currentRemi = currentProp = 0;
+    var currentInfTime;
     var currentDataIndex = 0;
     var simulation_running = false;
     var intervalPromise;
@@ -56,8 +57,12 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
         $scope.volumen_a_infu_p = utils.round_2d(currenPropInfusion.value * (infusion_time/60) / 60 ).toString() + " ml";
     }
 
-    update_simulation_data = function(remi_request_py, prop_request_py, resume_simulation)
+    update_simulation_data = function(
+        remi_request_py, prop_request_py, resume_simulation,
+        target_remi, target_prop, target_pnr, target_time)
     {
+        updateTarget(target_remi, target_prop, target_pnr, target_time);
+
         pump.get_simulation_information(remi_request_py, prop_request_py).then(function(data)
             {
                 $scope.prop_simulation_data = data.prop;
@@ -90,6 +95,9 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
         var p_ind_inf = webstore.get('prop_ind');
         var p_proc_inf = webstore.get('prop_proc');
 
+        /* pnr induction*/
+        var pnr_ind = webstore.get('pnr_ind');
+
         /* drugs concentration */
         var concentrationR = (webstore.get("induction_drug1").value) / webstore.get('drug1_solution');
         var concentrationP = webstore.get("induction_drug2").value / webstore.get('drug2_solution');
@@ -99,7 +107,20 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
         var prop_request_py = pump.prop_request(patient, ind_time, proc_time, p_ind_inf, p_proc_inf, concentrationP);
 
 
-        update_simulation_data(remi_request_py, prop_request_py, false);
+        update_simulation_data(remi_request_py, prop_request_py, false, r_ind_inf, p_ind_inf, pnr_ind, ind_time);
+    }
+
+    /* updates the values for the target value */
+    updateTarget = function(remi_conc, prop_conc, pnr, time) {
+
+        graphOperations.changeObjectX(utils.round_2d(remi_conc) * factor);
+        graphOperations.changeObjectY(utils.round_2d(prop_conc) * factor);
+        graphOperations.changeObjectZ(utils.round_2d(pnr));
+
+        $scope.Remifentanilo = utils.round_2d(remi_conc);
+        $scope.Propofol = utils.round_2d(prop_conc);
+        $scope.tiempo = time;
+        $scope.PNR = pnr;
     }
 
     simulate = function()
@@ -111,6 +132,19 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
 
         else
         {
+            // if induction value is ending update target to procedure
+            if ($scope.prop_simulation_data.infusionList.length === 2
+                    && currentTime === $scope.prop_simulation_data.infusionList[0].endTime)
+            {
+                var p_proc_inf = webstore.get('prop_proc');
+                var r_proc_inf = webstore.get('remi_proc');
+
+                var proc_time = webstore.get('time_proc');
+                var pnr_proc = webstore.get('pnr_proc');
+
+                updateTarget(r_proc_inf, p_proc_inf, pnr_proc, proc_time);
+            }
+
             var currenPropInfusion = pump.current_infusion(
               currentDataIndex, $scope.prop_simulation_data.infusionList);
             var currenRemiInfusion = pump.current_infusion(
@@ -121,10 +155,12 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
             currentPNR = $scope.pnr_simulation_data[currentDataIndex];
             currentRemi = $scope.remi_cocentrations[currentDataIndex];
             currentProp = $scope.prop_cocentrations[currentDataIndex];
+            currentInfTime = infusion_time;
 
             graphOperations.changeObjectSY(utils.round_2d(currentProp) * factor);
             graphOperations.changeObjectSX(utils.round_2d(currentRemi) * factor);
             graphOperations.changeObjectSZ(utils.round_2d(currentPNR) * pnr_factor);
+
 
             updateControls(
               infusion_time,
@@ -153,7 +189,8 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
         var prop_refresh_request = pump.prop_refresh_request(
             patient, $scope.last_infusion_prop, $scope.prop_simulation_data, concentrationP);
 
-        update_simulation_data(remi_refresh_request, prop_refresh_request, true);
+        update_simulation_data(remi_refresh_request, prop_refresh_request, true,
+            $scope.Remifentanilo, $scope.Propofol, $scope.PNR, $scope.tiempo);
     }
 
     $scope.actualizar = function()
@@ -181,7 +218,8 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
                 $scope.prop_simulation_data,
                 concentrationP);
 
-        update_simulation_data(remi_update_py, prop_update_py, true);
+        update_simulation_data(remi_update_py, prop_update_py, true,
+            $scope.Remifentanilo, $scope.Propofol, $scope.PNR, $scope.tiempo);
     }
 
     $scope.stop_start = function()
@@ -233,7 +271,7 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
         var pnrController = pnrFolder.add($scope, 'PNR', 0, 100).name('PNR %').listen();
         var remiController = pnrFolder.add($scope, 'Remifentanilo', 1, 10).name('Remifentanilo ng/ml').listen();
         var propController = pnrFolder.add($scope, 'Propofol', 1, 10).name('Propofol mcg/ml').listen();
-        var tiempoController = pnrFolder.add($scope, 'tiempo', 0, 240).name('Tiempo (minutos)');
+        var tiempoController = pnrFolder.add($scope, 'tiempo', 0, 240).name('Tiempo (minutos)').listen();
         pnrFolder.add($scope, 'actualizar').name('Actualizar');
 
         var confFolder = updateGui.addFolder('Configuracion');

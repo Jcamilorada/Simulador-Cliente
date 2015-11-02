@@ -151,6 +151,7 @@ var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $interval, graph, 
         intervalPromise = $interval(updateInfusionInfo, 3000, 1);
     }, true);
 
+    /* Update the infusion values based on the patient information and current inductions. */
     updateInfusionInfo = function()
     {
         var patient = webstore.get('patient');
@@ -176,6 +177,7 @@ var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $interval, graph, 
         update_simulation_data(remi_request_py, prop_request_py);
     }
 
+    /* Perform a server request and update values with retrieved data */
     update_simulation_data = function(remi_request_py, prop_request_py, resume_simulation)
     {
         pump.get_simulation_information(remi_request_py, prop_request_py).then(function(data)

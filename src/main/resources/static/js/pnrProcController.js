@@ -1,4 +1,4 @@
-var pnrProcController = function($scope, $sf_y, $sf_x, $sf_xy, graph, webstore, utils)
+var pnrProcController = function($scope, $sf_y, $sf_x, $sf_xy, graph, webstore, utils, pump)
 {
     // factor value for concentrations.
     var factor = 10;
@@ -138,6 +138,7 @@ var pnrProcController = function($scope, $sf_y, $sf_x, $sf_xy, graph, webstore, 
         }
     }
 
+    /* Update the infusion values based on the patient information and current inductions. */
     updateInfusionInfo = function()
     {
         var patient = webstore.get('patient');
@@ -163,6 +164,7 @@ var pnrProcController = function($scope, $sf_y, $sf_x, $sf_xy, graph, webstore, 
         update_simulation_data(remi_request_py, prop_request_py);
     }
 
+    /* Perform a server request and update values with retrieved data */
     update_simulation_data = function(remi_request_py, prop_request_py, resume_simulation)
     {
         pump.get_simulation_information(remi_request_py, prop_request_py).then(function(data)
