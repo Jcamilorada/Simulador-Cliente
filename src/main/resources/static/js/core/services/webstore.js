@@ -32,4 +32,13 @@ App.service('webstore', function ($cookieStore, $cookies) {
     this.update = function(name, value) {
         $cookieStore.put(name, value);
     }
+
+    /**
+     * Remove the given cookie value.
+     *
+     * @param  {String} name variable name.
+     */
+    this.remove = function(name) {
+         $cookieStore.remove(name);
+    }
 });

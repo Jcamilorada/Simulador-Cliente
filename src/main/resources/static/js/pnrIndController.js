@@ -1,7 +1,8 @@
-var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $interval, graph, webstore, utils, pump)
+var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $sf_xy_pnr, graph, webstore, utils, pump)
 {
     // factor value for concentrations.
     var factor = 10;
+    var pnr_factor = 100;
     var graphOperations;
 
     // stores variables names
@@ -108,48 +109,22 @@ var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $interval, graph, 
     }
 
     // set init values based on configuration
-    initValues = function(PNR, remi, prop, time)
+    initValues = function(remi, prop, time)
     {
-        $scope.PNR = PNR;
         $scope.Tiempo = time;
+        $scope.Remifentanilo = remi;
+        $scope.Propofol = prop;
 
-        if (angular.isDefined(remi) && angular.isDefined(prop))
-        {
-            $scope.Remifentanilo = remi;
-            $scope.Propofol = prop;
+        // Get pnr value
+        $sf_xy_pnr.get({ x: utils.round_2d(remi),  y: utils.round_2d(prop)}, function (data) {
+            if (angular.isDefined(data.value)) {
 
-            initGraph($scope.PNR, $scope.Remifentanilo, $scope.Propofol);
-            createControls();
-        }
-        else
-        {
-            $sf_xy.get({pnr: utils.round_2d($scope.PNR/100) }, function (data) {
-                if (angular.isDefined(data.x) && angular.isDefined(data.y)) {
-
-                    $scope.Propofol = utils.round_2d(data.y)
-                    $scope.Remifentanilo = utils.round_2d(data.x)
-
-                    initGraph($scope.PNR, $scope.Remifentanilo, $scope.Propofol);
-                    createControls();
-                }
-            });
-        }
+                $scope.PNR = utils.round_2d(data.value) * pnr_factor;
+                initGraph($scope.PNR, $scope.Remifentanilo, $scope.Propofol);
+                createControls();
+            }
+        });
     }
-
-    var intervalPromise;
-    $scope.$watch('[Propofol,Tiempo,Remifentanilo,PNR]', function () {
-        webstore.update(prop_c, utils.round_2d($scope.Propofol));
-        webstore.update(remi_c, utils.round_2d($scope.Remifentanilo));
-        webstore.update(pnr_c, utils.round_2d($scope.PNR));
-        webstore.update('time_ind', $scope.Tiempo);
-
-        if (angular.isDefined(intervalPromise)) {
-            $interval.cancel(intervalPromise);
-            intervalPromise = undefined;
-        }
-
-        intervalPromise = $interval(updateInfusionInfo, 3000, 1);
-    }, true);
 
     /* Update the infusion values based on the patient information and current inductions. */
     updateInfusionInfo = function()
@@ -174,6 +149,7 @@ var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $interval, graph, 
         /* request information */
         var remi_request_py = pump.remi_request(patient, ind_time, proc_time, r_ind_inf, r_proc_inf, concentrationR);
         var prop_request_py = pump.prop_request(patient, ind_time, proc_time, p_ind_inf, p_proc_inf, concentrationP);
+
         update_simulation_data(remi_request_py, prop_request_py);
     }
 
@@ -201,8 +177,8 @@ var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $interval, graph, 
                 $scope.velocidad_infunsion_p =
                     currenPropInfusion.infusionValue + "ml/h -" + currenPropInfusion.alternativeInfusionValue + " mg/kg/h";
 
-                $scope.volumen_a_infu_r = utils.round_2d(currenRemiInfusion.infusionValue * (ind_time/60) / 60).toString()  + " ml";
-                $scope.volumen_a_infu_p = utils.round_2d(currenPropInfusion.infusionValue * (ind_time/60) / 60 ).toString() + " ml";
+                $scope.volumen_a_infu_r = utils.round_2d(currenRemiInfusion.infusionValue * (ind_time) / 60).toString()  + " ml";
+                $scope.volumen_a_infu_p = utils.round_2d(currenPropInfusion.infusionValue * (ind_time) / 60 ).toString() + " ml";
             });
     }
 
@@ -221,15 +197,20 @@ var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $interval, graph, 
         gui.destroy();
     });
 
-    var remi = webstore.get(remi_c);
-    var prop = webstore.get(prop_c);
-    var pnr_ind = webstore.get(pnr_c);
     var time_ind =  webstore.get(time_c);
+    var remi_ind = webstore.get(remi_c);
+    var prop_ind = webstore.get(prop_c);
 
-    var pnr = angular.isDefined(pnr_ind) ? pnr_ind : webstore.get(ind_c).pnr;
-    var time = angular.isDefined(time_ind) ? time_ind : 120;
+    var indMethod =  webstore.get(ind_c);
+    var time = angular.isDefined(time_ind) ? time_ind : 15;
+    var remi = angular.isDefined(remi_ind) ? remi_ind: indMethod.remi
+    var prop = angular.isDefined(prop_ind) ? prop_ind: indMethod.prop;
+
     webstore.update(time_c, time);
+    webstore.update(remi_c, remi);
+    webstore.update(prop_c, prop);
+
 
     graphOperations = graph.draw_simple_mesh($scope, 'induction_mesh');
-    initValues(pnr, remi, prop, time);
+    initValues(remi, prop, time);
 }

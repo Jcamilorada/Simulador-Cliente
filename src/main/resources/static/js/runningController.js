@@ -222,6 +222,21 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
             $scope.Remifentanilo, $scope.Propofol, $scope.PNR, $scope.tiempo);
     }
 
+    $scope.despertar = function()
+    {
+        $scope.Remifentanilo = 2;
+        $scope.Propofol = 1.5;
+        $scope.tiempo = 10;
+        $scope.PNR = 0.01;
+
+        stop_simulation();
+
+        graphOperations.changeObjectX(2 * factor);
+        graphOperations.changeObjectY(1.5 * factor);
+        graphOperations.changeObjectZ(0.01);
+    }
+
+
     $scope.stop_start = function()
     {
         if (simulation_running)
@@ -273,6 +288,7 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
         var propController = pnrFolder.add($scope, 'Propofol', 1, 10).name('Propofol mcg/ml').listen();
         var tiempoController = pnrFolder.add($scope, 'tiempo', 0, 240).name('Tiempo (minutos)').listen();
         pnrFolder.add($scope, 'actualizar').name('Actualizar');
+        pnrFolder.add($scope, 'despertar').name('Despertar');
 
         var confFolder = updateGui.addFolder('Configuracion');
         var velController = confFolder.add($scope, 'velocidad_sim', [1, 2, 5, 10, 30, 100 ] ).name('Velocidad de simulacion');
@@ -320,6 +336,7 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
 
         // Update Propofol value if user update remi
         remiController.onChange(function(value) {
+            stop_simulation();
             $sf_y.get({ x: utils.round_2d(value),  pnr: utils.round_2d($scope.PNR/100)}, function (data) {
                 if (angular.isDefined(data.value)) {
                     graphOperations.changeObjectX(utils.round_2d(value) * factor);
@@ -332,6 +349,7 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
 
         // Update remi value if user update propofol
         propController.onChange(function(value) {
+            stop_simulation();
             $sf_x.get({ y: utils.round_2d(value),  pnr: utils.round_2d($scope.PNR/100)}, function (data) {
                 if (angular.isDefined(data.value)) {
                     graphOperations.changeObjectX(utils.round_2d(data.value) * factor);
@@ -344,7 +362,8 @@ var runningController = function($scope, $interval, $sf_y, $sf_x, $sf_xy, graph,
 
         // Update remi and propofol if user update PNR
         pnrController.onChange(function(value) {
-           $sf_xy.get({pnr: utils.round_2d($scope.PNR/100) }, function (data) {
+            stop_simulation();
+            $sf_xy.get({pnr: utils.round_2d($scope.PNR/100) }, function (data) {
                 if (angular.isDefined(data.x) && angular.isDefined(data.y)) {
                     graphOperations.changeObjectX(utils.round_2d(data.x) * factor);
                     graphOperations.changeObjectY(utils.round_2d(data.y) * factor);

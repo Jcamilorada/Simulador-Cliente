@@ -1,5 +1,9 @@
 var inductionMethodsController = function($scope, $induction_methods, webstore){
 
+    /* induction values contants  */
+    var prop_c = "prop_ind";
+    var remi_c = "remi_ind";
+
     $scope.onLoad = function() {
         $scope.induction_method = webstore.get("induction_method");
 
@@ -10,6 +14,8 @@ var inductionMethodsController = function($scope, $induction_methods, webstore){
 
     $scope.onChange = function() {
         webstore.update("induction_method", $scope.induction_method);
+        webstore.remove(remi_c);
+        webstore.remove(prop_c);
     }
 
     $scope.onLoad();

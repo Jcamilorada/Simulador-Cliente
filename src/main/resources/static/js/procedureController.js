@@ -1,15 +1,19 @@
-var procedureController = function($scope, $modal, $cookieStore, $cookies){
+var procedureController = function($scope, $modal, webstore){
+    /* Procedure constants */
+    var prop_c = "prop_proc";
+    var remi_c = "remi_proc";
+
     $scope.onLoad = function() {
-        var procedureType = $cookies["procedureType"];
-        var procedure = $cookies["procedure"];
+        var procedureType = webstore.get("procedureType");
+        var procedure = webstore.get("procedure");
 
         if (angular.isDefined(procedureType)) {
-            $scope.procedureType = $cookieStore.get("procedureType");
+            $scope.procedureType = webstore.get("procedureType");
             $scope.pnr = $scope.procedureType.pnr;
         }
 
         if (angular.isDefined(procedure)) {
-            $scope.procedure = $cookieStore.get("procedure");
+            $scope.procedure = webstore.get("procedure");
         }
     }
 
@@ -27,14 +31,15 @@ var procedureController = function($scope, $modal, $cookieStore, $cookies){
         });
 
         modalInstance.result.then(function(selection) {
-            $cookieStore.put("procedureType", selection.procedureType);
-            $cookieStore.put("procedure", selection.procedure);
+            webstore.remove(prop_c);
+            webstore.remove(remi_c);
+
+            webstore.update("procedureType", selection.procedureType);
+            webstore.update("procedure", selection.procedure);
 
             $scope.procedure = selection.procedure;
             $scope.procedureType = selection.procedureType;
             $scope.pnr = selection.procedureType.pnr;
-
-            $cookieStore.remove("proc_pnr");
         });
     }
 

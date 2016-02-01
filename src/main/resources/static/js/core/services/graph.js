@@ -1,6 +1,31 @@
 App.service('graph', function (serverUrl){
     DIV_PADDING = 15;
 
+    function makeTextSprite(message, parameters)
+    {
+        if ( parameters === undefined ) parameters = {};
+        var fontsize = parameters.hasOwnProperty("fontsize") ? parameters["fontsize"] : 18;
+
+
+        var borderThickness = 4;
+        var borderColor = { r:0, g:0, b:0, a:0.0};
+        var backgroundColor = {r:255, g:255, b:255, a:0.0};
+
+        var canvas = document.createElement('canvas');
+        var context = canvas.getContext('2d');
+        context.font = "Bold " + fontsize + "px Arial";
+        context.fillText(message, 10, 50);
+
+        var texture = new THREE.Texture(canvas)
+        texture.needsUpdate = true;
+        var spriteMaterial = new THREE.SpriteMaterial({ map: texture, useScreenCoordinates: false});
+        var sprite = new THREE.Sprite(spriteMaterial);
+        sprite.scale.set(100, 50, 1.0);
+
+        return sprite;
+    }
+
+
     getIntersectedObjects = function(mouse, camera, objects) {
         var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
         var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
@@ -108,6 +133,15 @@ App.service('graph', function (serverUrl){
             scene.add(mesh);
             scene.add(sphere);
 
+            var propText = makeTextSprite( "Propofol", {fontsize: 12});
+            propText.position.set(5, 10, 0);
+            scene.add(propText);
+
+            var remiText = makeTextSprite( "Remifentanilo", {fontsize: 12});
+            remiText.position.set(65, -50, 0);
+            scene.add(remiText);
+
+
             camera.lookAt(scene.position);
 
             renderer = new THREE.WebGLRenderer();
@@ -208,6 +242,14 @@ App.service('graph', function (serverUrl){
             scene.add(mesh);
             scene.add(sphere);
             scene.add(simulation_sphere);
+
+            var propText = makeTextSprite( "Propofol", {fontsize: 12 });
+            propText.position.set(5, 10, 0);
+            scene.add(propText);
+
+            var remiText = makeTextSprite( "Remifentanilo", {fontsize: 12, });
+            remiText.position.set(65, -50, 0);
+            scene.add(remiText);
 
             camera.lookAt(scene.position);
 

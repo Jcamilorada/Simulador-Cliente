@@ -148,7 +148,8 @@ App.service('pump', function (utils, serverUrl, $q, $http) {
         $q.all([remi_request, prop_request]).then(function() {
             if (propErrors || remiErrors)
             {
-                alert('no es posible');
+                $.jGrowl("Por las características farmacocineticas de los medicamentes no es posible alcanzar la concentración deseada");
+
                 return;
             }
 

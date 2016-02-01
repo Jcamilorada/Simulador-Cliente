@@ -1,23 +1,25 @@
 <!doctype html>
 <html ng-app="AngularApp">
 <head>
+    <meta charset="utf-8">
     <title>Simulador Cliente</title>
     <link rel="stylesheet" href="css/bootstrap.min.css" type='text/css'>
     <link rel="stylesheet" href="css/general.css" type='text/css'>
     <link rel='stylesheet' href='css/css.css' type='text/css'>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.2.12/jquery.jgrowl.min.css" />
 
     <script src="libraries/three.min.js"></script>
-
     <script src="libraries/angular/angular.min.js"></script>
     <script src="libraries/angular/angular-route.min.js"></script>
     <script src="libraries/angular/angular-resource.min.js"></script>
     <script src="libraries/angular/angular-sanitize.min.js"></script>
     <script src="libraries/angular/angular-cookies.min.js"></script>
 
-    <script src="js/core/graphic_functions.js"></script>
 
+    <script src="js/core/graphic_functions.js"></script>
     <script src="libraries/angular-translate.js"></script>
     <script src="libraries/jquery-2.1.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.2.12/jquery.jgrowl.min.js"></script>
     <script src="libraries/ui-bootstrap-tpls-0.11.2.min.js"></script>
     <script src="libraries/holder.js"></script>
     <script src="libraries/parser.js"></script>
@@ -27,7 +29,7 @@
     <script src="js/app.js"></script>
     <script src="js/core/services/webstore.js"></script>
     <script src="js/core/services/utils.js"></script>
-    <script src="js/core/services/pump.js"></script>
+    <script src="js/core/services/pump.js" charset="UTF-8"></script>
     <script src="js/core/services/graph.js"></script>
     <script src="js/core/constants.js"></script>
     <script src="js/core/routeModule.js"></script>
@@ -59,7 +61,6 @@
     <li role="presentation"><a href="#/inductionMethod">Induction</a></li>
     <li role="presentation"><a href="#/procedure">Procedure</a></li>
     <li role="presentation"><a href="#/drugsInduction">Medicamentos</a></li>
-    <!--<li role="presentation"><a href="#/drugsProcedure">Mdc Procedimiento</a></li>-->
     <li role="presentation"><a href="#/drugsConcentration">Mdc concentracion</a></li>
     <li role="presentation"><a href="#/ind_proc">PNR Induccion Seleccion</a></li>
     <li role="presentation"><a href="#/pnr_proc">PNR Procedimiento Seleccion</a></li>
@@ -71,5 +72,7 @@
         <div ng-view></div>
     </div>
 </div>
+
+    <link rel='stylesheet' href='css/dat.gui.css' type='text/css'>
 </body>
 </html>
