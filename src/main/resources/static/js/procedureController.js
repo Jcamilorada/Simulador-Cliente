@@ -2,6 +2,7 @@ var procedureController = function($scope, $modal, webstore){
     /* Procedure constants */
     var prop_c = "prop_proc";
     var remi_c = "remi_proc";
+    var time_c = "time_proc";
 
     $scope.onLoad = function() {
         var procedureType = webstore.get("procedureType");
@@ -33,6 +34,7 @@ var procedureController = function($scope, $modal, webstore){
         modalInstance.result.then(function(selection) {
             webstore.remove(prop_c);
             webstore.remove(remi_c);
+            webstore.remove(time_c);
 
             webstore.update("procedureType", selection.procedureType);
             webstore.update("procedure", selection.procedure);

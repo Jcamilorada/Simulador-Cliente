@@ -3,6 +3,8 @@ var pnrProcController = function($scope, $sf_y, $sf_x, $sf_xy, $sf_xy_pnr, graph
     // factor value for concentrations.
     var factor = 10;
     var pnr_factor = 100;
+    var default_time = 30;
+
     var graphOperations;
 
     // cookies names
@@ -202,7 +204,7 @@ var pnrProcController = function($scope, $sf_y, $sf_x, $sf_xy, $sf_xy_pnr, graph
     var prop_proc = webstore.get(prop_c);
 
     var procMethod =  webstore.get(prc_c);
-    var time = angular.isDefined(time_proc) ? time_proc : 120;
+    var time = angular.isDefined(time_proc) ? time_proc : default_time;
     var remi = angular.isDefined(remi_proc) ? remi_proc: procMethod.remi
     var prop = angular.isDefined(prop_proc) ? prop_proc: procMethod.prop;
 

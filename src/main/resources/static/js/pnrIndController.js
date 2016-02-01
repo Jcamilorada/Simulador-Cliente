@@ -3,6 +3,7 @@ var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $sf_xy_pnr, graph,
     // factor value for concentrations.
     var factor = 10;
     var pnr_factor = 100;
+    var default_time = 6;
     var graphOperations;
 
     // stores variables names
@@ -202,7 +203,7 @@ var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $sf_xy_pnr, graph,
     var prop_ind = webstore.get(prop_c);
 
     var indMethod =  webstore.get(ind_c);
-    var time = angular.isDefined(time_ind) ? time_ind : 15;
+    var time = angular.isDefined(time_ind) ? time_ind : default_time;
     var remi = angular.isDefined(remi_ind) ? remi_ind: indMethod.remi
     var prop = angular.isDefined(prop_ind) ? prop_ind: indMethod.prop;
 
