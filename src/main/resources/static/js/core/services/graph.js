@@ -141,8 +141,8 @@ App.service('graph', function (serverUrl){
             remiText.position.set(65, -50, 0);
             scene.add(remiText);
 
-
-            camera.lookAt(scene.position);
+            var camera_position = new THREE.Vector3(0, 0, 75);
+            camera.lookAt(camera_position);
 
             renderer = new THREE.WebGLRenderer();
             renderer.setSize(div_element.width(), div_element.height());
@@ -251,7 +251,8 @@ App.service('graph', function (serverUrl){
             remiText.position.set(65, -50, 0);
             scene.add(remiText);
 
-            camera.lookAt(scene.position);
+            var camera_position = new THREE.Vector3(0, 0, 75);
+            camera.lookAt(camera_position);
 
             renderer = new THREE.WebGLRenderer();
             renderer.setSize(div_element.width(), div_element.height());

@@ -62,5 +62,14 @@
 }
 
 .dg .cr.string input[type=text] {
-    color: #2fa1d6;
+    color: #15506a;
+    font-weight: bold;
+}
+
+.dg .cr.number input[type=text] {
+    color: #15506a;
+    font-weight: bold;
+}
+.dg .c .slider-fg {
+    background: #15506a;
 }

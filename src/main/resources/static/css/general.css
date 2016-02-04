@@ -19,11 +19,11 @@ p{
 }
 
 .main-content {
-    height: 580px;
+    height: 680px;
 }
 
 .main-content-graph {
-    height: 1580px;
+    height: 680px;
 }
 
 
@@ -35,7 +35,6 @@ th {
     margin: 0 0 0 0;
     text-transform: uppercase;
     font-size: 11px;
-
 }
 
 .check-list-title {
@@ -62,4 +61,4 @@ th {
 
 .canvas-holder .canvas {
     width: 600px !important;
-    }
+}

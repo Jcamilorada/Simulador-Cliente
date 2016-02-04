@@ -71,12 +71,12 @@ GRAP.getSphere = function(color) {
 
 GRAP.getCamera = function(width, height) {
     var camera = new THREE.PerspectiveCamera(
-        75,             // Field of view
+        45,             // Field of view
         width / height, // Aspect ratio
         1,              // Near
         10000           // Far
     );
-    camera.position.set(-103, -119, 140);
+    camera.position.set(-115, -115, 120);
     camera.up = new THREE.Vector3(0, 0, 1);
 
     return camera;
