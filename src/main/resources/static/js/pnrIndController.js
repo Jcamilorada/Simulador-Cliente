@@ -1,4 +1,4 @@
-var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $sf_xy_pnr, graph, webstore, utils, pump)
+var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $sf_xy_pnr, graph, webstore, utils, pump, $interval)
 {
     // factor value for concentrations.
     var factor = 10;
@@ -126,6 +126,22 @@ var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $sf_xy_pnr, graph,
             }
         });
     }
+
+    /* updates plan method each 3 seconds if values are changed */
+    var intervalPromise;
+    $scope.$watch('[Propofol,Tiempo,Remifentanilo,PNR]', function () {
+        webstore.update(prop_c, utils.round_2d($scope.Propofol));
+        webstore.update(remi_c, utils.round_2d($scope.Remifentanilo));
+        webstore.update(pnr_c, utils.round_2d($scope.PNR));
+        webstore.update(time_c, $scope.Tiempo);
+
+        if (angular.isDefined(intervalPromise)) {
+            $interval.cancel(intervalPromise);
+            intervalPromise = undefined;
+        }
+
+        intervalPromise = $interval(updateInfusionInfo, 2000, 1);
+    }, true);
 
     /* Update the infusion values based on the patient information and current inductions. */
     updateInfusionInfo = function()
