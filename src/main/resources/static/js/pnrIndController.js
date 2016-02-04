@@ -28,7 +28,7 @@ var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $sf_xy_pnr, graph,
         zController = gui.add($scope, 'PNR', 0, 100).name('PNR %').listen();
         xController = gui.add($scope, 'Remifentanilo', 1, 10).name('Remifentanilo ng/ml').listen();
         yController = gui.add($scope, 'Propofol', 1, 10).name('Propofol mcg/ml').listen();
-        timeController = gui.add($scope, 'Tiempo', 0, 240).name('Tiempo (minutos) ').listen();
+        timeController = gui.add($scope, 'Tiempo', 0, 240).name('Tiempo (minutos)').listen();
 
         dataGui = new dat.GUI({ autoPlace: false, width: 500});
         var remiFolder = dataGui.addFolder('Remifentanilo');
@@ -104,8 +104,8 @@ var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $sf_xy_pnr, graph,
 
         // Update stores value
         timeController.onChange(function(value) {
-            $scope.Tiempo = value;
             webstore.update('time_ind', value);
+            updateInfusionInfo();
         });
     }
 
