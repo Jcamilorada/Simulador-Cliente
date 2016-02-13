@@ -208,7 +208,9 @@ var pnrProcController = function($scope, $sf_y, $sf_x, $sf_xy, $sf_xy_pnr, graph
         graphOperations.changeObjectY(prop * factor);
     }
 
+    // Al cambiar de pagina se cancela cualquier promesa de actualización y se almacenan los valores al dia.
     $scope.$on('$locationChangeStart', function(event, next, current) {
+        $interval.cancel(intervalPromise);
         webstore.update(prop_c, utils.round_2d($scope.Propofol));
         webstore.update(remi_c, utils.round_2d($scope.Remifentanilo));
         webstore.update(pnr_c, utils.round_2d($scope.PNR))
