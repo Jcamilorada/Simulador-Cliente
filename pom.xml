@@ -21,7 +21,7 @@
     </properties>
 
     <build>
-        <finalName>simulador-cliente</finalName>
+        <finalName>simulador</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

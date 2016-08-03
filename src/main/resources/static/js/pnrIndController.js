@@ -13,7 +13,6 @@ var pnrIndController = function($scope, $sf_y, $sf_x, $sf_xy, $sf_xy_pnr, graph,
     var remi_c = "remi_ind";
     var time_c = "time_ind";
 
-
     var zController, xController, yController, timeController, gui;
     createControls = function()
     {
